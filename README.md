@@ -15,3 +15,8 @@ The maps would be used across the site, and in transactional emails, in these wa
 4. Somehow some styling would need to be applied!
 
 The procedure would need to be run once in the beginning, and then whenever new Places are added. Some of the Place types have additions frequently (like neighborhood and business organizations, and user-drawn boundaries). 
+
+## Open source
+The procedure should be open source. The images that Chicago Cityscape creates using the procedure will be open source, and I'll even attempt to publish them here (or with a well-defined folder hierarchy on the CC webserver, e.g. `/map_images/ward/50.png`). 
+
+The source data will not be open sourced. 
