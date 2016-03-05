@@ -22,7 +22,10 @@ CSS = style.css
 PROJECTION ?= local
 DRAWFLAGS = -c $(CSS) \
 	-xl \
-	-j $(PROJECTION)
+	-j $(PROJECTION) \
+	-f 20 \
+	--padding 15 \
+	-P0
 
 API ?= http://overpass-api.de/api/interpreter
 
@@ -33,29 +36,42 @@ info:
 	@echo POLYGONS: $(POLYGONS)
 	@echo POINTS: $(POINTS)
 
-slugs: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
+SLUGS = $(sort $(shell cat slug/slug.csv))
+
+slugs: slug/slug.csv
+
+svgs: $(foreach x,$(SLUGS),svg/$x.svg)
+
+shps: $(foreach x,$(SLUGS),shp/$x.shp)
 
 .SECONDEXPANSION:
 
 png/%.png: svg/%.svg | $$(@D)
 	convert $< $@
 
-svg/%.svg: shp/%.shp bg/bg-lines.shp bg/bg-area.shp | $$(@D)
+svg/%.svg: shp/%.shp | $$(@D)
 	svgis draw -o $@ $^ $(DRAWFLAGS)
 
-$(foreach x,$(POINTS),shp/$x/%.shp): | $$(@D)
+$(foreach x,$(SLUGS),shp/$x.shp): $$(@D).shp
+	ogr2ogr $@ $< $(OGRFLAGS) -where "slug='$(basename $(@F))'"
+
+# Download the POINTS and POLYGONS sep'tly
+$(foreach x,$(POINTS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(OGRFLAGS) \
 	-sql "SELECT ST_Buffer(geom, $(BUFFER)) geom, slug \
-		FROM $(notdir $(@D)) WHERE slug='$(*F)' AND GeometryType(geom)='POINT'"
+	FROM $(basename $(@F)) WHERE GeometryType(geom)='POINT'"
 
-$(foreach x,$(POLYGONS),shp/$x/%.shp): | $$(@D)
-	ogr2ogr $@ PG:"$(CONNECTION)" $(*D) $(OGRFLAGS) \
-	-select slug -where "slug='$(*F)' AND GeometryType(geom)='MULTIPOLYGON'"
+$(foreach x,$(POLYGONS),shp/$x.shp): | $$(@D)
+	ogr2ogr $@ PG:"$(CONNECTION)" $(basename $(@F)) $(OGRFLAGS) \
+	-select slug -where "GeometryType(geom)='MULTIPOLYGON'"
+
+slug/slug.csv: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
+	cat $^ > $@
 
 slug/%.csv: | slug
 	ogr2ogr /dev/stdout PG:"$(CONNECTION)" $* -f CSV -select slug | \
 	tail +2 | \
-	sed 's,",,g;' > $@
+	sed -E 's,",,g;s,( |/),-,g;s,^,$*/,' > $@
 
 bg/bg-lines.shp: bg/bg.osm
 	ogr2ogr $@ $^ lines $(OGRFLAGS)
@@ -80,7 +96,7 @@ bbox/bbox.shp: $(foreach x,$(POLYGONS) $(POINTS),bbox/$x.shp)
 
 bbox/%.shp: | bbox
 	ogr2ogr $@ PG:"$(CONNECTION)" $(OGRFLAGS) \
-	-sql "SELECT ST_Envelope(ST_Collect(geom)) geom, '$*' slug FROM $*"
+	-sql "SELECT ST_Envelope(ST_Collect(geom)) geom FROM $*"
 
-bbox bg $(foreach x,png slug shp svg,$(addprefix $x/,$(POLYGONS) $(POINTS))):
+bbox bg slug $(foreach x,png shp svg,$(addprefix $x/,$(POLYGONS) $(POINTS))):
 	mkdir -p $@

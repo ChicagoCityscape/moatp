@@ -19,8 +19,3 @@ chmod 0600 .pgpass
 
 [More info](http://www.postgresql.org/docs/current/static/libpq-pgpass.html).
 
-To do
------
-
-* Remove commas from slugs.
-* 
