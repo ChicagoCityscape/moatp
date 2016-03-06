@@ -19,4 +19,4 @@ The procedure would need to be run once in the beginning, and then whenever new 
 ## Open source
 The procedure should be open source. The images that Chicago Cityscape creates using the procedure will be open source, and I'll even attempt to publish them here (or with a well-defined folder hierarchy on the CC webserver, e.g. `/map_images/ward/50.png`). 
 
-The source data will not be open sourced. 
+The source data (e.g. all of the shapefiles and PostGIS database) will not be provided. 
