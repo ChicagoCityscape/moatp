@@ -16,7 +16,44 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-polygon,
-.polygon {
-    fill: black;
+.slug polygon,
+.slug .polygon {
+    fill: none;
+    stroke-width: 25px;
+    opacity: 0.50;
+}
+
+.buildings-area {
+    fill: #3a3a3a;
+}
+
+.parks-area {
+    fill: #7fb575;
+}
+
+.roads-lines {
+    stroke-width: 1.25px;
+}
+
+.water-area {
+    fill: #647dde;
+}
+
+/* no fill */
+.parks-lines,
+.roads-area,
+.water-lines,
+.buildings-lines {
+    fill: none
+}
+
+/* no stroke */
+.water-area,
+.parks-area,
+.parks-lines,
+.roads-area,
+.water-lines,
+.buildings-area,
+.buildings-lines {
+    stroke: none;
 }
