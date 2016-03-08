@@ -1,3 +1,8 @@
+moatp
+-----
+
+MOATP is a workflow for creating many svg maps that combine PostGreSQL and OSM geodata.
+
 Requirements
 ------------
 
@@ -12,12 +17,14 @@ Add a file called `.pgpass` in this directory. It should have the format:
 ````
 hostname:port:database:username:password
 ````
-And `0600` permissions:
+and have `0600` permissions:
 ```
 chmod 0600 .pgpass
 ```
 
-Create a file called `config.ini` with:
+[More info](http://www.postgresql.org/docs/current/static/libpq-pgpass.html).
+
+Create a file called `config.ini` with the following information:
 ```
 PSQL_PROJECTION= [map projection in database]
 OUTPUT_PROJECTION= [desired projection of output]
@@ -29,4 +36,9 @@ POLYGONS= [list of polygon features]
 POINTS= [list of point features]
 ```
 
-[More info](http://www.postgresql.org/docs/current/static/libpq-pgpass.html).
+See [`config_example.ini`](config_example.ini) for more options.
+
+License
+-------
+
+Copyright 2016, Neil Freeman. Licensed under the GPL. See LICENSE for more.
