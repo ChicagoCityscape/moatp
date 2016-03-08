@@ -102,13 +102,14 @@ osm/%.ql: queries/%.txt | osm
 	sed -e 's,/\*.*\*/,,g' > $@
 
 bbox/bbox.shp: $(foreach x,$(POLYGONS) $(POINTS),bbox/$x.shp)
-	@rm $@
-	for file in $^; do ogr2ogr $@ $$file -f 'ESRI Shapefile' -a_srs $(PROJECTION) -update -append;\
+	@rm -f $@
+	for file in $^; do \
+		ogr2ogr $@ $$file -f 'ESRI Shapefile' -update -append -t_srs EPSG:4326; \
 	done;
 
-bbox/%.shp: | bbox
-	ogr2ogr $@ PG:"$(CONNECTION)" $(OGRFLAGS) \
-	-sql "SELECT ST_Envelope(ST_Collect(geom)) geom FROM $*"
+bbox/%.shp: shp/%.shp | $$(@D)
+	ogr2ogr $@ $< $(OGRFLAGS) -dialect sqlite \
+	-sql 'SELECT ST_Envelope(ST_Collect(Geometry)) Geometry FROM "$(*F)"'
 
-bbox bg osm slug $(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
+bg osm slug $(foreach x,bbox png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
 	mkdir -p $@
