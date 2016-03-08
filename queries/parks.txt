@@ -1,0 +1,10 @@
+[out:xml][timeout:600];
+(
+    way["leisure"="park"]({{bbox}});
+    relation["leisure"="park"]({{bbox}});
+);
+(
+    ._;
+    >;
+);
+out body qt;

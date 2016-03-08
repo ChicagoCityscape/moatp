@@ -1,0 +1,14 @@
+[out:xml][timeout:600];
+(
+    way["highway"="primary"]({{bbox}});
+    relation["highway"="primary"]({{bbox}});
+    way["highway"="motorway"]({{bbox}});
+    relation["highway"="motorway"]({{bbox}});
+    way["highway"="secondary"]({{bbox}});
+    relation["highway"="secondary"]({{bbox}});
+);
+(
+    ._;
+    >;
+);
+out body qt;
