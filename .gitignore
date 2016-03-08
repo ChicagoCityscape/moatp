@@ -3,6 +3,8 @@ config.ini
 query.ql
 bbox
 bg
+osm
+png
 shp
 slug
 svg

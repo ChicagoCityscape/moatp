@@ -1,0 +1,19 @@
+[out:xml][timeout:600];
+(
+    way["water"="lake"]({{bbox}});
+    relation["water"="lake"]({{bbox}});
+
+    way["waterway"="riverbank"]({{bbox}});
+    relation["waterway"="riverbank"]({{bbox}});
+
+    way["natural"="water"]({{bbox}});
+    relation["natural"="water"]({{bbox}});
+
+    way["natural"="wetland"]({{bbox}});
+    relation["natural"="wetland"]({{bbox}});
+);
+(
+    ._;
+    >;
+);
+out body qt;
