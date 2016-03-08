@@ -29,11 +29,17 @@ Create a file called `config.ini` with the following information:
 PSQL_PROJECTION= [map projection in database]
 OUTPUT_PROJECTION= [desired projection of output]
 
+# tables with POLYGON/MULTIPOLYGON geometry
+POLYGONS= [space-separated of tables]
+
+# tables with POINT/MULTIPOINT geometry
+POINTS= [space-separated of tables]
+
+# Bounding box for OSM data (long/lat format):
 BBOX = minlat minlong maxlat maxlong
 
-POLYGONS= [list of polygon features]
-
-POINTS= [list of point features]
+# template files that contain a {{bbox}} place holder
+QUERIES= [space-separated of files]
 ```
 
 See [`config_example.ini`](config_example.ini) for more options.

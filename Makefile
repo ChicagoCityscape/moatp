@@ -13,52 +13,52 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+no =
+space = $(no) $(no)
+comma = ,
 
 include config.ini
-PGPASSFILE = $(abspath .pgpass)
+
+# ogr2ogr flags and settings
+PGPASSFILE ?= $(abspath .pgpass)
 export PGPASSFILE
 
 OSM_CONFIG_FILE ?= osm.ini
 OSM_USE_CUSTOM_INDEXING = NO
 export OSM_CONFIG_FILE OSM_USE_CUSTOM_INDEXING
 
-no =
-space = $(no) $(no)
-comma = ,
-
 HOST = $(shell cut -d : -f 1 $(PGPASSFILE))
 DATABASE = $(shell cut -d : -f 3 $(PGPASSFILE))
-
-SLUG = slug
-GEOM = geom
-
 CONNECTION = dbname=$(DATABASE) host=$(HOST)
-BUFFER ?= 2640
-
 OGRFLAGS = -f 'ESRI Shapefile' -lco ENCODING=UTF-8 -overwrite
+BUFFER ?= 2640
+SLUG ?= slug
+GEOM ?= geom
 
+# SVGIS flags and settings
 PADDING ?= 1200
+SCALE ?= 10
 CSS ?= style.css
 OUTPUT_PROJECTION ?= local
-DRAWFLAGS = -c $(CSS) \
-	-xl \
-	-j $(OUTPUT_PROJECTION) \
-	-f 20 \
+DRAWFLAGS = --style $(CSS) \
+	--no-viewbox \
+	--inline \
+	--clip \
+	--crs $(OUTPUT_PROJECTION) \
+	--scale $(SCALE) \
 	--padding $(PADDING) \
-	-P0 \
-	--clip
+	--precision 0
 
+# curl flags and settings
 API ?= http://overpass-api.de/api/interpreter
 
-QUERIES = $(basename $(shell ls queries))
+# Targets:
+BGS = $(foreach x,$(notdir $(basename $(QUERIES))),bg/$x-lines.shp bg/$x-area.shp)
 
-BGS = $(foreach x,$(QUERIES),bg/$x-lines.shp bg/$x-area.shp)
+.PHONY: info bgs pngs shps rawshp svgs
 
-SLUGS = $(sort $(shell cat slug/slug.csv))
-
-.PHONY: info bgs pngs shps raw slugs svgs
-
-svgs: $(foreach x,$(SLUGS),svg/$x.svg)
+svgs pngs shps: slug/slug.csv
+	while read slug; do $(MAKE) $(patsubst %s,%,$@)/$$slug.$(patsubst %s,%,$@); done < $<
 
 info:
 	@echo CONNECTION: $(CONNECTION)
@@ -66,23 +66,21 @@ info:
 	@echo POINTS: $(POINTS)
 	@echo QUERIES: $(QUERIES)
 
-slugs: slug/slug.csv
-
-shps: $(foreach x,$(SLUGS),shp/$x.shp)
-
-raw: $(foreach x,$(POINTS),shp/$x.shp) $(foreach x,$(POLYGONS),shp/$x.shp)
+rawshps: $(foreach x,$(POINTS),shp/$x.shp) $(foreach x,$(POLYGONS),shp/$x.shp)
 
 bgs: $(BGS)
+
+osms: $(foreach x,$(QUERIES),osm/$x.osm)
 
 .SECONDEXPANSION:
 
 png/%.png: svg/%.svg | $$(@D)
 	convert $< $@
 
-svg/%.svg: shp/%.shp $(BGS) | $$(@D)
-	svgis draw -o $@ $^ $(DRAWFLAGS) --bounds $$(svgis bounds $<)
+svg/%.svg: $(CSS) $(BGS) shp/%.shp | $$(@D)
+	svgis draw -o $@ $(filter-out $<,$^) $(DRAWFLAGS) --bounds $$(svgis bounds $(lastword $^))
 
-$(foreach x,$(SLUGS),shp/$x.shp): $$(@D).shp | $$(@D)
+shp/%.shp: $$(@D).shp | $$(@D)
 	ogr2ogr $@ $< $(OGRFLAGS) -t_srs EPSG:4326 \
 	-where "$(SLUG)='$(basename $(@F))'"
 
@@ -93,7 +91,7 @@ $(foreach x,$(POINTS),shp/$x.shp): | $$(@D)
 
 $(foreach x,$(POLYGONS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(basename $(@F)) \
-	$(OGRFLAGS) -a_srs $(PSQL_PROJECTION) -select $(SLUG)
+	$(OGRFLAGS) -skipfailures -a_srs $(PSQL_PROJECTION) -select $(SLUG)
 
 slug/slug.csv: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
 	cat $^ > $@
@@ -109,9 +107,7 @@ bg/%-lines.shp: osm/%.osm | bg
 bg/%-area.shp: osm/%.osm | bg
 	ogr2ogr $@ $^ multipolygons $(OGRFLAGS) -t_srs EPSG:4326
 
-.PRECIOUS: osm/%.osm
-
-osms: $(foreach x,$(QUERIES),osm/$x.osm)
+.PRECIOUS .INTERMEDIATE: $(foreach x,$(QUERIES),osm/$x.osm)
 
 osm/%.osm: osm/%.ql | osm
 	curl $(API) $(CURLFLAGS) -o $@ --data @$<
