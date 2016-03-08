@@ -38,6 +38,16 @@ POINTS= [list of point features]
 
 See [`config_example.ini`](config_example.ini) for more options.
 
+Getting a BBOX
+--------------
+
+If you need help figuring out what bbox you want, there's a helper Makefile called `bbox.mk`.
+
+Run this after creating `.pgpass` and setting `PSQL_PROJECTION`, POLYGONS` and `POINTS`:
+````
+make -f bbox.mk
+````
+
 License
 -------
 
