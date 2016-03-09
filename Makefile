@@ -13,6 +13,7 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 include config.ini
 
 comma = ,
@@ -27,7 +28,7 @@ export OSM_CONFIG_FILE OSM_USE_CUSTOM_INDEXING
 
 HOST = $(shell cut -d : -f 1 $(PGPASSFILE))
 DATABASE = $(shell cut -d : -f 3 $(PGPASSFILE))
-CONNECTION = dbname=$(DATABASE) host=$(HOST)
+CONNECTION ?= dbname=$(DATABASE) host=$(HOST)
 OGRFLAGS = -f 'ESRI Shapefile' -lco ENCODING=UTF-8 -overwrite -skipfailures
 BUFFER ?= 2640
 SLUG ?= slug
@@ -37,7 +38,6 @@ GEOM ?= geom
 PADDING ?= 1200
 SCALE ?= 10
 CSS ?= style.css
-OUTPUT_PROJECTION ?= local
 DRAWFLAGS = --style $(CSS) \
 	--no-viewbox \
 	--inline \
