@@ -54,9 +54,9 @@ DRAWFLAGS = --style $(CSS) \
 API ?= http://overpass-api.de/api/interpreter
 
 # Query files, by geometry
-POINT_BG = $(foreach x,$(notdir $(basename $(POINT_QUERIES))),bg/$x.shp)
-LINE_BG = $(foreach x,$(notdir $(basename $(LINE_QUERIES))),bg/$x.shp)
-AREA_BG = $(foreach x,$(notdir $(basename $(AREA_QUERIES))),bg/$x.shp)
+BGS = $(foreach x,$(notdir $(basename $(POINT_QUERIES))),bg/points/$x.shp) \
+	$(foreach x,$(notdir $(basename $(LINE_QUERIES))),bg/lines/$x.shp) \
+	$(foreach x,$(notdir $(basename $(AREA_QUERIES))),bg/multipolygons/$x.shp)
 
 # Targets:
 
@@ -79,7 +79,6 @@ info:
 
 rawshps: $(foreach x,$(POINTS) $(POLYGONS),shp/$x.shp)
 
-BGS = $(AREA_BG) $(LINE_BG) $(POINT_BG)
 bgs: $(BGS)
 
 osms: $(foreach x,$(QUERIES),osm/$x.osm)
@@ -107,14 +106,8 @@ $(foreach x,$(POLYGONS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(basename $(@F)) \
 	$(OGRFLAGS) -skipfailures -a_srs $(PSQL_PROJECTION) -select $(SLUG)
 
-$(POINT_BG): bg/%.shp: osm/%.osm | bg
-	ogr2ogr $@ $^ points $(OGRFLAGS) -t_srs EPSG:4326
-
-$(LINE_BG): bg/%.shp: osm/%.osm | bg
-	ogr2ogr $@ $^ lines $(OGRFLAGS) -t_srs EPSG:4326
-
-$(AREA_BG): bg/%.shp: osm/%.osm | bg
-	ogr2ogr $@ $^ multipolygons $(OGRFLAGS) -t_srs EPSG:4326
+$(BGS): bg/%.shp: osm/$$(*F).osm | $$(@D)
+	ogr2ogr $@ $^ $(*D) $(OGRFLAGS) -t_srs EPSG:4326
 
 slug/slug.csv: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
 	cat $^ > $@
@@ -134,7 +127,8 @@ osm/%.ql: queries/%.txt | osm
 	tr -d '\n' | \
 	sed -e 's,/\*.*\*/,,g' > $@
 
-bg osm slug $(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
+bg/lines bg/points bg/multipolygons osm slug \
+$(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
 	mkdir -p $@
 
 PIPINSTALL = pip install 'svgis[clip,simplify]>=0.4.0'
