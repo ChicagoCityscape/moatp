@@ -19,24 +19,28 @@
 .slug polygon,
 .slug .polygon {
     fill: none;
-    stroke-width: 25px;
+    stroke-width: 20px;
     opacity: 0.50;
 }
 
 .buildings {
     fill: #3a3a3a;
+    stroke: none;
 }
 
 .parks {
     fill: #7fb575;
+    stroke: none;
 }
 
 .roads {
     stroke-width: 1.25px;
 }
 
-.water {
+#water polygon,
+#water .polygon {
     fill: #647dde;
+    stroke: none;
 }
 
 .stops {

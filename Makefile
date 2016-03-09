@@ -47,7 +47,8 @@ DRAWFLAGS = --style $(CSS) \
 	--crs $(OUTPUT_PROJECTION) \
 	--scale $(SCALE) \
 	--padding $(PADDING) \
-	--precision 0
+	--precision 0 \
+	--simplify 90
 
 # curl flags and settings
 API ?= http://overpass-api.de/api/interpreter
@@ -87,6 +88,8 @@ osms: $(foreach x,$(QUERIES),osm/$x.osm)
 
 png/%.png: svg/%.svg | $$(@D)
 	convert $< $(CONVERTFLAGS) $@
+
+.PRECIOUS .INTERMEDIATE: svg/%.svg
 
 svg/%.svg: $(CSS) $(BGS) shp/%.shp | $$(@D)
 	svgis draw -o $@ $(filter-out $<,$^) $(DRAWFLAGS) --bounds $$(svgis bounds $(lastword $^))
