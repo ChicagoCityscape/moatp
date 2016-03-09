@@ -86,7 +86,7 @@ osms: $(foreach x,$(QUERIES),osm/$x.osm)
 .SECONDEXPANSION:
 
 png/%.png: svg/%.svg | $$(@D)
-	convert $< $@
+	convert $< $(CONVERTFLAGS) $@
 
 svg/%.svg: $(CSS) $(BGS) shp/%.shp | $$(@D)
 	svgis draw -o $@ $(filter-out $<,$^) $(DRAWFLAGS) --bounds $$(svgis bounds $(lastword $^))
