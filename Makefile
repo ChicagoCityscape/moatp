@@ -64,10 +64,10 @@ bg/$x.shp)
 
 .PHONY: info bgs pngs shps rawshp svgs $(POLYGONS) $(POINTS)
 
-svgs pngs shps: slug/slug.csv
-	sed 's,^,$(patsubst %s,%,$@)/,;s,$$,.$(patsubst %s,%,$@),g' $< | \
-	xargs $(MAKE) | \
-	grep -v ' is up to date.'
+svgs pngs shps: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
+	cat $^ | \
+	sed 's,^,$(@:s=)/,;s,$$,.$(@:s=),g'| \
+	xargs $(MAKE)
 
 info:
 	@echo CONNECTION= $(CONNECTION)
@@ -82,20 +82,9 @@ rawshps: $(foreach x,$(POINTS) $(POLYGONS),shp/$x.shp)
 bgs: $(BGS)
 osms: $(OSMS)
 
-# Collect all the slugs into a single file
-$(POLYGONS) $(POINTS): slug/slug.csv
-	grep ^$@ $< | \
-	sed 's,^,png/,;s,$$,.png,' | \
-	xargs $(MAKE) | \
-	grep -v ' is up to date.'
-
-slug/slug.csv: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
-	cat $^ > $@
-
-slug/%.csv: shp/%.shp | slug
-	ogr2ogr /dev/stdout $< -f CSV -select $(SLUG) | \
-	tail +2 | \
-	sed -E 's,^,$*/,' > $@
+# General rule for each table
+$(POLYGONS) $(POINTS): %: slug/%.csv
+	sed 's,^,png/,;s,$$,.png,' $< | xargs $(MAKE)
 
 .SECONDEXPANSION:
 
@@ -104,6 +93,10 @@ png/%.png: svg/%.svg | $$(@D)
 
 svg/%.svg: $(CSS) $(BGS) $(MORE_GEODATA) shp/%.shp | $$(@D)
 	svgis draw -o $@ $(filter-out %.css,$^) $(DRAWFLAGS) --bounds $$(svgis bounds $(lastword $^))
+
+slug/%.csv: shp/%.shp | slug
+	ogr2ogr /dev/stdout $< -f CSV -select $(SLUG) | \
+	tail +2 | sed -E 's,^,$*/,' > $@
 
 shp/%.shp: $$(@D).shp | $$(@D)
 	ogr2ogr $@ $< $(OGRFLAGS) -t_srs $(OUTPUT_PROJECTION) \
