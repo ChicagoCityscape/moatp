@@ -69,12 +69,6 @@ svgs pngs shps: slug/slug.csv
 	xargs $(MAKE) | \
 	grep -v ' is up to date.'
 
-$(POLYGONS) $(POINTS): slug/slug.csv
-	grep ^$@ $< | \
-	sed 's,^,png/,;s,$$,.png,' | \
-	xargs $(MAKE) | \
-	grep -v ' is up to date.'
-
 info:
 	@echo CONNECTION= $(CONNECTION)
 	@echo PSQL_PROJECTION= $(PSQL_PROJECTION)
@@ -85,10 +79,23 @@ info:
 	@echo QUERIES= $(notdir $(basename $(POINT_QUERIES) $(LINE_QUERIES) $(AREA_QUERIES)))
 
 rawshps: $(foreach x,$(POINTS) $(POLYGONS),shp/$x.shp)
-
 bgs: $(BGS)
-
 osms: $(OSMS)
+
+# Collect all the slugs into a single file
+$(POLYGONS) $(POINTS): slug/slug.csv
+	grep ^$@ $< | \
+	sed 's,^,png/,;s,$$,.png,' | \
+	xargs $(MAKE) | \
+	grep -v ' is up to date.'
+
+slug/slug.csv: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
+	cat $^ > $@
+
+slug/%.csv: shp/%.shp | slug
+	ogr2ogr /dev/stdout $< -f CSV -select $(SLUG) | \
+	tail +2 | \
+	sed -E 's,^,$*/,' > $@
 
 .SECONDEXPANSION:
 
@@ -118,14 +125,6 @@ $(foreach x,$(POLYGONS),shp/$x.shp): | $$(@D)
 $(BGS): bg/%.shp: osm/$$(*F).osm | $$(@D)
 	ogr2ogr $@ $^ $(*D) $(OGRFLAGS) -t_srs $(OUTPUT_PROJECTION)
 
-slug/slug.csv: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
-	cat $^ > $@
-
-slug/%.csv: | slug
-	ogr2ogr /dev/stdout PG:"$(CONNECTION)" $* -f CSV -select $(SLUG) | \
-	tail +2 | \
-	sed -E 's,^,$*/,' > $@
-
 .PRECIOUS .INTERMEDIATE: $(OSMS)
 
 $(OSMS): osm/%.osm: osm/%.ql | osm
@@ -143,13 +142,13 @@ $(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
 ### install
 
 PIP = pip
-PIPINSTALL = $(PIP) install 'svgis[clip,simplify]>=0.4.0'
+PIPINSTALL = $(PIP) install --upgrade 'svgis[clip,simplify]>=0.4.0'
 
 install-osx:
 	- brew install gdal --with-postgres
 	- brew install imagemagick
 	- brew install geos
-	$(PIPINSTALL)
+	sudo $(PIPINSTALL)
 
 install-ubuntu:
 	apt-get -q update
