@@ -19,8 +19,8 @@
 .slug polygon,
 .slug .polygon {
     fill: none;
-    stroke-width: 20px;
-    opacity: 0.50;
+    stroke-width: 18px;
+    opacity: 0.42;
 }
 
 .buildings {
