@@ -10,7 +10,7 @@ Requirements
 
 * [GDAL](http://www.gdal.org) with PostgreSQL support
 * [ImageMagick](http://www.imagemagick.org/script/binary-releases.php)
-* [SVGIS](https://github.com/fitnr/svgis)
+* [svgis](https://github.com/fitnr/svgis)
 
 Recommended (these improve performance):
 * [GEOS](https://trac.osgeo.org/geos/)

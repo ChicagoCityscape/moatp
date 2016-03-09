@@ -102,7 +102,9 @@ shp/%.shp: $$(@D).shp | $$(@D)
 	ogr2ogr $@ $< $(OGRFLAGS) -t_srs $(OUTPUT_PROJECTION) \
 	-where "$(SLUG)='$(basename $(@F))'"
 
-# Download the POINTS and POLYGONS sep'tly
+### Download PostGreSQL data
+# POINTS and POLYGONS separately
+
 $(foreach x,$(POINTS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(OGRFLAGS) -a_srs $(PSQL_PROJECTION) \
 	-sql "SELECT ST_Buffer($(GEOM), $(BUFFER), 120) $(GEOM), $(SLUG) FROM $(basename $(@F))"
@@ -110,6 +112,8 @@ $(foreach x,$(POINTS),shp/$x.shp): | $$(@D)
 $(foreach x,$(POLYGONS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(basename $(@F)) \
 	$(OGRFLAGS) -a_srs $(PSQL_PROJECTION) -select $(SLUG)
+
+### Download OSM data
 
 $(BGS): bg/%.shp: osm/$$(*F).osm | $$(@D)
 	ogr2ogr $@ $^ $(*D) $(OGRFLAGS) -t_srs $(OUTPUT_PROJECTION)
@@ -135,6 +139,8 @@ osm/%.ql: queries/%.txt | osm
 bg/lines bg/points bg/multipolygons osm slug \
 $(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
 	mkdir -p $@
+
+### install
 
 PIP = pip
 PIPINSTALL = $(PIP) install 'svgis[clip,simplify]>=0.4.0'
