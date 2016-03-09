@@ -23,37 +23,30 @@
     opacity: 0.50;
 }
 
-.buildings-area {
+.buildings {
     fill: #3a3a3a;
 }
 
-.parks-area {
+.parks {
     fill: #7fb575;
 }
 
-.roads-lines {
+.roads {
     stroke-width: 1.25px;
 }
 
-.water-area {
+.water {
     fill: #647dde;
 }
 
-/* no fill */
-.parks-lines,
-.roads-area,
-.water-lines,
-.buildings-lines {
-    fill: none
+.stops {
+    r: 7.2;
+    fill: white;
+    stroke: #323589;
+    stroke-width: 1.75px;
 }
 
-/* no stroke */
-.water-area,
-.parks-area,
-.parks-lines,
-.roads-area,
-.water-lines,
-.buildings-area,
-.buildings-lines {
-    stroke: none;
+.transit {
+    stroke-width: 2px;
+    stroke: #323589;
 }

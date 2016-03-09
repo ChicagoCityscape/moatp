@@ -52,8 +52,12 @@ DRAWFLAGS = --style $(CSS) \
 # curl flags and settings
 API ?= http://overpass-api.de/api/interpreter
 
+# Query files, by geometry
+POINT_BG = $(foreach x,$(notdir $(basename $(POINT_QUERIES))),bg/$x.shp)
+LINE_BG = $(foreach x,$(notdir $(basename $(LINE_QUERIES))),bg/$x.shp)
+AREA_BG = $(foreach x,$(notdir $(basename $(AREA_QUERIES))),bg/$x.shp)
+
 # Targets:
-BGS = $(foreach x,$(notdir $(basename $(QUERIES))),bg/$x-lines.shp bg/$x-area.shp)
 
 .PHONY: info bgs pngs shps rawshp svgs
 
@@ -66,8 +70,9 @@ info:
 	@echo POINTS: $(POINTS)
 	@echo QUERIES: $(QUERIES)
 
-rawshps: $(foreach x,$(POINTS),shp/$x.shp) $(foreach x,$(POLYGONS),shp/$x.shp)
+rawshps: $(foreach x,$(POINTS) $(POLYGONS),shp/$x.shp)
 
+BGS = $(AREA_BG) $(LINE_BG) $(POINT_BG)
 bgs: $(BGS)
 
 osms: $(foreach x,$(QUERIES),osm/$x.osm)
@@ -93,6 +98,15 @@ $(foreach x,$(POLYGONS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(basename $(@F)) \
 	$(OGRFLAGS) -skipfailures -a_srs $(PSQL_PROJECTION) -select $(SLUG)
 
+$(POINT_BG): bg/%.shp: osm/%.osm | bg
+	ogr2ogr $@ $^ points $(OGRFLAGS) -t_srs EPSG:4326
+
+$(LINE_BG): bg/%.shp: osm/%.osm | bg
+	ogr2ogr $@ $^ lines $(OGRFLAGS) -t_srs EPSG:4326
+
+$(AREA_BG): bg/%.shp: osm/%.osm | bg
+	ogr2ogr $@ $^ multipolygons $(OGRFLAGS) -t_srs EPSG:4326
+
 slug/slug.csv: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
 	cat $^ > $@
 
@@ -100,12 +114,6 @@ slug/%.csv: | slug
 	ogr2ogr /dev/stdout PG:"$(CONNECTION)" $* -f CSV -select $(SLUG) | \
 	tail +2 | \
 	sed -E 's,^,$*/,' > $@
-
-bg/%-lines.shp: osm/%.osm | bg
-	ogr2ogr $@ $^ lines $(OGRFLAGS) -t_srs EPSG:4326
-
-bg/%-area.shp: osm/%.osm | bg
-	ogr2ogr $@ $^ multipolygons $(OGRFLAGS) -t_srs EPSG:4326
 
 .PRECIOUS .INTERMEDIATE: $(foreach x,$(QUERIES),osm/$x.osm)
 

@@ -1,0 +1,9 @@
+[out:xml][timeout:60];
+(
+    node[railway=station]({{bbox}});
+);
+(
+    ._;
+    >;
+);
+out body qt;
