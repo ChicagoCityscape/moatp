@@ -133,3 +133,16 @@ osm/%.ql: queries/%.txt | osm
 
 bg osm slug $(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
 	mkdir -p $@
+
+PIPINSTALL = pip install 'svgis[clip,simplify]>=0.4.0'
+
+install-osx:
+	- brew install gdal --with-postgres
+	- brew install imagemagick
+	- brew install geos
+	$(PIPINSTALL)
+
+install-ubuntu:
+	apt-get -q update
+	apt-get -q install -y gdal-bin libgeos-dev imagemagick python-dev
+	$(PIPINSTALL)

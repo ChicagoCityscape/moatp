@@ -10,6 +10,19 @@ Requirements
 * ImageMagick
 * SVGIS
 
+Optional (these improve performance):
+* GEOS
+* Numpy
+
+Installation tasks are included for OS X and Ubuntu Linux:
+
+```
+make install-osx
+sudo make install-ubuntu
+```
+
+The OS X installer assumes [`homebrew`](http://brew.sh). Both installers assume [`pip`](https://pip.pypa.io/en/stable/). If you don't have these available, install them first.
+
 Setup
 -----
 
