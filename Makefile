@@ -66,12 +66,14 @@ bg/$x.shp)
 
 svgs pngs shps: slug/slug.csv
 	sed 's,^,$(patsubst %s,%,$@)/,;s,$$,.$(patsubst %s,%,$@),g' $< | \
-	xargs $(MAKE)	
+	xargs $(MAKE) | \
+	grep -v ' is up to date.'
 
 $(POLYGONS) $(POINTS): slug/slug.csv
 	grep ^$@ $< | \
 	sed 's,^,png/,;s,$$,.png,' | \
-	xargs $(MAKE)
+	xargs $(MAKE) | \
+	grep -v ' is up to date.'
 
 info:
 	@echo CONNECTION= $(CONNECTION)
