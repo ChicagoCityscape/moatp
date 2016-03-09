@@ -42,7 +42,7 @@ DRAWFLAGS = --style $(CSS) \
 	--no-viewbox \
 	--inline \
 	--clip \
-	--crs $(OUTPUT_PROJECTION) \
+	--crs file \
 	--scale $(SCALE) \
 	--padding $(PADDING) \
 	--precision 0 \
@@ -97,7 +97,7 @@ svg/%.svg: $(CSS) $(BGS) $(MORE_GEODATA) shp/%.shp | $$(@D)
 	svgis draw -o $@ $(filter-out %.css,$^) $(DRAWFLAGS) --bounds $$(svgis bounds $(lastword $^))
 
 shp/%.shp: $$(@D).shp | $$(@D)
-	ogr2ogr $@ $< $(OGRFLAGS) -t_srs EPSG:4326 \
+	ogr2ogr $@ $< $(OGRFLAGS) -t_srs $(OUTPUT_PROJECTION) \
 	-where "$(SLUG)='$(basename $(@F))'"
 
 # Download the POINTS and POLYGONS sep'tly
@@ -110,7 +110,7 @@ $(foreach x,$(POLYGONS),shp/$x.shp): | $$(@D)
 	$(OGRFLAGS) -a_srs $(PSQL_PROJECTION) -select $(SLUG)
 
 $(BGS): bg/%.shp: osm/$$(*F).osm | $$(@D)
-	ogr2ogr $@ $^ $(*D) $(OGRFLAGS) -t_srs EPSG:4326
+	ogr2ogr $@ $^ $(*D) $(OGRFLAGS) -t_srs $(OUTPUT_PROJECTION)
 
 slug/slug.csv: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
 	cat $^ > $@
