@@ -17,6 +17,7 @@
 include config.ini
 
 comma = ,
+base = $(notdir $(basename $1))
 
 # ogr2ogr flags and settings
 PGPASSFILE ?= $(abspath .pgpass)
@@ -51,13 +52,13 @@ DRAWFLAGS = --style $(CSS) \
 # curl flags and settings
 API ?= http://overpass-api.de/api/interpreter
 
-OSMS = $(foreach x,$(notdir $(basename $(POINT_QUERIES) $(LINE_QUERIES) $(AREA_QUERIES))),osm/$x.osm)
+OSMS = $(foreach x,$(call base,$(POINT_QUERIES) $(LINE_QUERIES) $(AREA_QUERIES)),osm/$x.osm)
 
 # Query files, by geometry
 BGS = $(foreach x,\
-	$(addprefix multipolygons/,$(notdir $(basename $(AREA_QUERIES))))\
-	$(addprefix lines/,$(notdir $(basename $(LINE_QUERIES))))\
-	$(addprefix points/,$(notdir $(basename $(POINT_QUERIES)))),\
+	$(addprefix multipolygons/,$(call base,$(AREA_QUERIES)))\
+	$(addprefix lines/,$(call base,$(LINE_QUERIES)))\
+	$(addprefix points/,$(call base,$(POINT_QUERIES))),\
 bg/$x.shp)
 
 # Targets:
@@ -76,7 +77,7 @@ info:
 	@echo BBOX= $(BBOX)
 	@echo POLYGONS= $(POLYGONS)
 	@echo POINTS= $(POINTS)
-	@echo QUERIES= $(notdir $(basename $(POINT_QUERIES) $(LINE_QUERIES) $(AREA_QUERIES)))
+	@echo QUERIES= $(call base,$(POINT_QUERIES) $(LINE_QUERIES) $(AREA_QUERIES))
 
 rawshps: $(foreach x,$(POINTS) $(POLYGONS),shp/$x.shp)
 bgs: $(BGS)
