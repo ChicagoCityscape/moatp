@@ -1,7 +1,7 @@
 moatp
 -----
 
-MOATP is a workflow for creating many svg maps that combine PostGreSQL and [OpenStreetMap](http://openstreetmap.org) geodata.
+MOATP is a workflow for combining PostGreSQL and [OpenStreetMap](http://openstreetmap.org) geodata into beautiful SVG maps.
 
 If you have a bunch of data in a Postgres database and want to combine it with OpenStreetMap to create a whole bunch of maps, try it out.
 

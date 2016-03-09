@@ -13,11 +13,9 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-no =
-space = $(no) $(no)
-comma = ,
-
 include config.ini
+
+comma = ,
 
 # ogr2ogr flags and settings
 PGPASSFILE ?= $(abspath .pgpass)
@@ -30,7 +28,7 @@ export OSM_CONFIG_FILE OSM_USE_CUSTOM_INDEXING
 HOST = $(shell cut -d : -f 1 $(PGPASSFILE))
 DATABASE = $(shell cut -d : -f 3 $(PGPASSFILE))
 CONNECTION = dbname=$(DATABASE) host=$(HOST)
-OGRFLAGS = -f 'ESRI Shapefile' -lco ENCODING=UTF-8 -overwrite
+OGRFLAGS = -f 'ESRI Shapefile' -lco ENCODING=UTF-8 -overwrite -skipfailures
 BUFFER ?= 2640
 SLUG ?= slug
 GEOM ?= geom
@@ -53,22 +51,26 @@ DRAWFLAGS = --style $(CSS) \
 # curl flags and settings
 API ?= http://overpass-api.de/api/interpreter
 
+OSMS = $(foreach x,$(notdir $(basename $(POINT_QUERIES) $(LINE_QUERIES) $(AREA_QUERIES))),osm/$x.osm)
+
 # Query files, by geometry
-BGS = $(foreach x,$(notdir $(basename $(POINT_QUERIES))),bg/points/$x.shp) \
-	$(foreach x,$(notdir $(basename $(LINE_QUERIES))),bg/lines/$x.shp) \
-	$(foreach x,$(notdir $(basename $(AREA_QUERIES))),bg/multipolygons/$x.shp)
+BGS = $(foreach x,\
+	$(addprefix multipolygons/,$(notdir $(basename $(AREA_QUERIES))))\
+	$(addprefix lines/,$(notdir $(basename $(LINE_QUERIES))))\
+	$(addprefix points/,$(notdir $(basename $(POINT_QUERIES)))),\
+bg/$x.shp)
 
 # Targets:
 
 .PHONY: info bgs pngs shps rawshp svgs $(POLYGONS) $(POINTS)
 
 svgs pngs shps: slug/slug.csv
-	sed -E 's,^,$(patsubst %s,%,$@)/,;s,$$,.$(patsubst %s,%,$@),g' $< | \
+	sed 's,^,$(patsubst %s,%,$@)/,;s,$$,.$(patsubst %s,%,$@),g' $< | \
 	xargs $(MAKE)	
 
 $(POLYGONS) $(POINTS): slug/slug.csv
 	grep ^$@ $< | \
-	sed -E 's,^,png/,;s,$$,.png,g' | \
+	sed 's,^,png/,;s,$$,.png,' | \
 	xargs $(MAKE)
 
 info:
@@ -78,23 +80,21 @@ info:
 	@echo BBOX= $(BBOX)
 	@echo POLYGONS= $(POLYGONS)
 	@echo POINTS= $(POINTS)
-	@echo QUERIES= $(POINT_QUERIES) $(LINE_QUERIES) $(AREA_QUERIES)
+	@echo QUERIES= $(notdir $(basename $(POINT_QUERIES) $(LINE_QUERIES) $(AREA_QUERIES)))
 
 rawshps: $(foreach x,$(POINTS) $(POLYGONS),shp/$x.shp)
 
 bgs: $(BGS)
 
-osms: $(foreach x,$(QUERIES),osm/$x.osm)
+osms: $(OSMS)
 
 .SECONDEXPANSION:
 
 png/%.png: svg/%.svg | $$(@D)
 	convert $< $(CONVERTFLAGS) $@
 
-.PRECIOUS .INTERMEDIATE: svg/%.svg
-
-svg/%.svg: $(CSS) $(BGS) shp/%.shp | $$(@D)
-	svgis draw -o $@ $(filter-out $<,$^) $(DRAWFLAGS) --bounds $$(svgis bounds $(lastword $^))
+svg/%.svg: $(CSS) $(BGS) $(MORE_GEODATA) shp/%.shp | $$(@D)
+	svgis draw -o $@ $(filter-out %.css,$^) $(DRAWFLAGS) --bounds $$(svgis bounds $(lastword $^))
 
 shp/%.shp: $$(@D).shp | $$(@D)
 	ogr2ogr $@ $< $(OGRFLAGS) -t_srs EPSG:4326 \
@@ -103,11 +103,11 @@ shp/%.shp: $$(@D).shp | $$(@D)
 # Download the POINTS and POLYGONS sep'tly
 $(foreach x,$(POINTS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(OGRFLAGS) -a_srs $(PSQL_PROJECTION) \
-	-sql "SELECT ST_Buffer($(GEOM), $(BUFFER)) $(GEOM), $(SLUG) FROM $(basename $(@F))"
+	-sql "SELECT ST_Buffer($(GEOM), $(BUFFER), 120) $(GEOM), $(SLUG) FROM $(basename $(@F))"
 
 $(foreach x,$(POLYGONS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(basename $(@F)) \
-	$(OGRFLAGS) -skipfailures -a_srs $(PSQL_PROJECTION) -select $(SLUG)
+	$(OGRFLAGS) -a_srs $(PSQL_PROJECTION) -select $(SLUG)
 
 $(BGS): bg/%.shp: osm/$$(*F).osm | $$(@D)
 	ogr2ogr $@ $^ $(*D) $(OGRFLAGS) -t_srs EPSG:4326
@@ -120,13 +120,13 @@ slug/%.csv: | slug
 	tail +2 | \
 	sed -E 's,^,$*/,' > $@
 
-.PRECIOUS .INTERMEDIATE: $(foreach x,$(QUERIES),osm/$x.osm)
+.PRECIOUS .INTERMEDIATE: $(OSMS)
 
-osm/%.osm: osm/%.ql | osm
+$(OSMS): osm/%.osm: osm/%.ql | osm
 	curl $(API) $(CURLFLAGS) -o $@ --data @$<
 
 osm/%.ql: queries/%.txt | osm
-	sed -E "s/{{(bbox|BBOX)}}/$(subst $(space),$(comma),$(BBOX))/g;s,//.*,,;s/ *//" $< | \
+	sed -E "s/{{([bB][bB][oO][xX])}}/$(subst $( ) $( ),$(comma),$(BBOX))/g;s,//.*$$,,;s/ *//" $< | \
 	tr -d '\n' | \
 	sed -e 's,/\*.*\*/,,g' > $@
 
@@ -134,7 +134,8 @@ bg/lines bg/points bg/multipolygons osm slug \
 $(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
 	mkdir -p $@
 
-PIPINSTALL = pip install 'svgis[clip,simplify]>=0.4.0'
+PIP = pip
+PIPINSTALL = $(PIP) install 'svgis[clip,simplify]>=0.4.0'
 
 install-osx:
 	- brew install gdal --with-postgres
