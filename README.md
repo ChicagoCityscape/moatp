@@ -54,6 +54,20 @@ Run this after creating `.pgpass` and setting `PSQL_PROJECTION`, POLYGONS` and `
 make -f bbox.mk
 ````
 
+Targets
+-------
+
+To create all the `png` or `svg` files, run:
+````
+make pngs
+make svgs
+````
+
+If your tables are named `boroughs` and `neighborhoods`, create pngs for one table like:
+````
+make boroughs
+````
+
 License
 -------
 

@@ -59,10 +59,16 @@ AREA_BG = $(foreach x,$(notdir $(basename $(AREA_QUERIES))),bg/$x.shp)
 
 # Targets:
 
-.PHONY: info bgs pngs shps rawshp svgs
+.PHONY: info bgs pngs shps rawshp svgs $(POLYGONS) $(POINTS)
 
 svgs pngs shps: slug/slug.csv
-	while read slug; do $(MAKE) $(patsubst %s,%,$@)/$$slug.$(patsubst %s,%,$@); done < $<
+	sed -E 's,^,$(patsubst %s,%,$@)/,;s,$$,.$(patsubst %s,%,$@),g' $< | \
+	xargs $(MAKE)	
+
+$(POLYGONS) $(POINTS): slug/slug.csv
+	grep ^$@ $< | \
+	sed -E 's,^,png/,;s,$$,.png,g' | \
+	xargs $(MAKE)
 
 info:
 	@echo CONNECTION: $(CONNECTION)
