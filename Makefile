@@ -72,10 +72,13 @@ $(POLYGONS) $(POINTS): slug/slug.csv
 	xargs $(MAKE)
 
 info:
-	@echo CONNECTION: $(CONNECTION)
-	@echo POLYGONS: $(POLYGONS)
-	@echo POINTS: $(POINTS)
-	@echo QUERIES: $(QUERIES)
+	@echo CONNECTION= $(CONNECTION)
+	@echo PSQL_PROJECTION= $(PSQL_PROJECTION)
+	@echo OUTPUT_PROJECTION= $(OUTPUT_PROJECTION)
+	@echo BBOX= $(BBOX)
+	@echo POLYGONS= $(POLYGONS)
+	@echo POINTS= $(POINTS)
+	@echo QUERIES= $(POINT_QUERIES) $(LINE_QUERIES) $(AREA_QUERIES)
 
 rawshps: $(foreach x,$(POINTS) $(POLYGONS),shp/$x.shp)
 

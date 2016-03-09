@@ -1,27 +1,28 @@
 moatp
 -----
 
-MOATP is a workflow for creating many svg maps that combine PostGreSQL and OSM geodata.
+MOATP is a workflow for creating many svg maps that combine PostGreSQL and [OpenStreetMap](http://openstreetmap.org) geodata.
+
+If you have a bunch of data in a Postgres database and want to combine it with OpenStreetMap to create a whole bunch of maps, try it out.
 
 Requirements
 ------------
 
-* GDAL installed with Postgresql support
-* ImageMagick
-* SVGIS
+* [GDAL](http://www.gdal.org) with PostgreSQL support
+* [ImageMagick](http://www.imagemagick.org/script/binary-releases.php)
+* [SVGIS](https://github.com/fitnr/svgis)
 
-Optional (these improve performance):
-* GEOS
-* Numpy
+Recommended (these improve performance):
+* [GEOS](https://trac.osgeo.org/geos/)
+* [Numpy](http://www.numpy.org)
 
 Installation tasks are included for OS X and Ubuntu Linux:
-
 ```
 make install-osx
 sudo make install-ubuntu
 ```
 
-The OS X installer assumes [`homebrew`](http://brew.sh). Both installers assume [`pip`](https://pip.pypa.io/en/stable/). If you don't have these available, install them first.
+The OS X installer assumes [homebrew](http://brew.sh) (`brew`). Both installers assume [`pip`](https://pip.pypa.io/en/stable/). If you don't have these available, install them first.
 
 Setup
 -----
@@ -30,12 +31,12 @@ Add a file called `.pgpass` in this directory. It should have the format:
 ````
 hostname:port:database:username:password
 ````
-and have `0600` permissions:
+and `0600` permissions:
 ```
 chmod 0600 .pgpass
 ```
 
-[More info](http://www.postgresql.org/docs/current/static/libpq-pgpass.html).
+[More info about .pgpass files](http://www.postgresql.org/docs/current/static/libpq-pgpass.html).
 
 Create a file called `config.ini` with the following information:
 ```
@@ -62,13 +63,29 @@ Getting a BBOX
 
 If you need help figuring out what bbox you want, there's a helper Makefile called `bbox.mk`.
 
-Run this after creating `.pgpass` and setting `PSQL_PROJECTION`, POLYGONS` and `POINTS`:
+Run this after creating `.pgpass` and setting `PSQL_PROJECTION`, `POLYGONS` and `POINTS`:
 ````
 make -f bbox.mk
 ````
 
+It will spit out the coordinate of the bounds for the tables you've entered.
+
+Queries
+-------
+
+OSM Overpass queries use a unique and fairly complicated syntax, See [Overpass Turbo](http://overpass-turbo.eu) and the [Overpass API language guide](https://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide) for help in writing a query.
+
+MOATP expects queries to return only one type of geometry. See the [`queries`](queries) directory for examples that return point, line and polygon data.
+
+Styles
+------
+
+See [`style.css`](style.css) for an example stylesheet.
+
 Targets
 -------
+
+For a review of settings, run `make info`.
 
 To create all the `png` or `svg` files, run:
 ````
@@ -83,5 +100,7 @@ make boroughs
 
 License
 -------
+
+MOATP was developed by [Neil Freeman](http://fakeisthenewreal.org) for [Chicago Cityscape](http://chicagocityscape.com).
 
 Copyright 2016, Neil Freeman. Licensed under the GPL. See LICENSE for more.
