@@ -49,8 +49,8 @@ POLYGONS= [space-separated of tables]
 # tables with POINT/MULTIPOINT geometry
 POINTS= [space-separated of tables]
 
-# Bounding box for OSM data (long/lat format):
-BBOX = minlat minlong maxlat maxlong
+# Bounding box for OSM data (long/lat format, comma-separated):
+BBOX = minlat,minlong,maxlat,maxlong
 
 # template files that contain a {{bbox}} place holder
 QUERIES= [space-separated of files]
@@ -58,17 +58,14 @@ QUERIES= [space-separated of files]
 
 See [`config_example.ini`](config_example.ini) for more options.
 
-Getting a BBOX
---------------
+## BBOX
 
-If you need help figuring out what bbox you want, there's a helper Makefile called `bbox.mk`.
-
-Run this after creating `.pgpass` and setting `PSQL_PROJECTION`, `POLYGONS` and `POINTS`:
+Run this after creating `.pgpass` and setting the tables in `POLYGONS` and `POINTS`:
 ````
 make -f bbox.mk
 ````
 
-It will spit out the coordinate of the bounds for the tables you've entered.
+It will spit the bounding box for all the data in your tables.
 
 Queries
 -------

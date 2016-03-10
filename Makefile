@@ -16,7 +16,6 @@
 
 include config.ini
 
-comma = ,
 base = $(notdir $(basename $1))
 
 # ogr2ogr flags and settings
@@ -125,7 +124,7 @@ $(OSMS): osm/%.osm: osm/%.ql | osm
 	curl $(API) $(CURLFLAGS) -o $@ --data @$<
 
 osm/%.ql: queries/%.txt | osm
-	sed -E "s/{{([bB][bB][oO][xX])}}/$(subst $( ) $( ),$(comma),$(BBOX))/g;s,//.*$$,,;s/ *//" $< | \
+	sed -E "s/{{([bB][bB][oO][xX])}}/$(BBOX)/g;s,//.*$$,,;s/ *//" $< | \
 	tr -d '\n' | \
 	sed -e 's,/\*.*\*/,,g' > $@
 
