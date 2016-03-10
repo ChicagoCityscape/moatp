@@ -89,7 +89,7 @@ $(POLYGONS) $(POINTS): %: slug/%.csv
 .SECONDEXPANSION:
 
 png/%.png: svg/%.svg | $$(@D)
-	convert $< $(CONVERTFLAGS) $@
+	convert -density 150 $< $(CONVERTFLAGS) $@
 
 svg/%.svg: $(CSS) $(BGS) $(MORE_GEODATA) shp/%.shp | $$(@D)
 	svgis draw -o $@ $(filter-out %.css,$^) $(DRAWFLAGS) --bounds $$(svgis bounds $(lastword $^))
