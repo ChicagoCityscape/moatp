@@ -16,13 +16,22 @@ Recommended (these improve performance):
 * [GEOS](https://trac.osgeo.org/geos/)
 * [Numpy](http://www.numpy.org)
 
-Installation tasks are included for OS X and Ubuntu Linux:
+Installation tasks are included for OS X and two flavors of Linux:
 ```
 make install-osx
 sudo make install-ubuntu
+sudo make install-centos
 ```
 
-The OS X installer assumes [homebrew](http://brew.sh) (`brew`). Both installers assume [`pip`](https://pip.pypa.io/en/stable/). If you don't have these available, install them first.
+The OS X installer assumes [homebrew](http://brew.sh) (`brew`).
+
+Both installers assume [`pip`](https://pip.pypa.io/en/stable/). If you don't have these available, install them first.
+
+You can check if your machine is ready with this command:
+```
+which make && which pip && which brew
+```
+On OS X you should see three paths. On Linux, only two since brew isn't needed.
 
 Setup
 -----

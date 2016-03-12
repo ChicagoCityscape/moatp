@@ -146,5 +146,10 @@ install-osx:
 
 install-ubuntu:
 	apt-get -q update
-	apt-get -q install -y gdal-bin libgeos-dev imagemagick python-dev
+	apt-get -q install -y g++ libgdal1-dev gdal-bin libgeos-dev imagemagick python-dev
+	$(PIPINSTALL)
+
+install-centos:
+	yum -q update
+	yum -q install -y gcc-c++ epel-release gdal gdal-devel geos ImageMagick
 	$(PIPINSTALL)
