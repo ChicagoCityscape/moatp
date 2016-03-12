@@ -28,7 +28,8 @@ export OSM_CONFIG_FILE OSM_USE_CUSTOM_INDEXING
 
 HOST = $(shell cut -d : -f 1 $(PGPASSFILE))
 DATABASE = $(shell cut -d : -f 3 $(PGPASSFILE))
-CONNECTION ?= dbname=$(DATABASE) host=$(HOST)
+USER = $(shell cut -d : -f 4 $(PGPASSFILE))
+CONNECTION ?= dbname=$(DATABASE) host=$(HOST) user=$(USER)
 OGRFLAGS = -f 'ESRI Shapefile' -lco ENCODING=UTF-8 -overwrite -skipfailures
 BUFFER ?= 2640
 SLUG ?= slug
