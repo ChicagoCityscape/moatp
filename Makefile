@@ -150,7 +150,7 @@ endif
 
 install-osx:
 	- brew install gdal --with-postgres
-	- brew install imagemagick
+	- brew install imagemagick --with-fontconfig --with-ghostscript
 	- brew install geos
 	sudo $(PIPINSTALL)
 
