@@ -132,9 +132,9 @@ $(OSMS): osm/%.osm: osm/%.ql | osm
 	curl $(API) $(CURLFLAGS) -o $@ --data @$<
 
 osm/%.ql: queries/%.txt | osm
-	sed -E "s/{{([bB][bB][oO][xX])}}/$(BBOX)/g;s,//.*$$,,;s/ *//" $< | \
+	sed "s/{{[bB][bB][oO][xX]}}/$(BBOX)/g;s,//.*$$,,;s/ *//;s,//.*$$,,g" $< | \
 	tr -d '\n' | \
-	sed -e 's,/\*.*\*/,,g' > $@
+	sed 's,/\*.*\*/,,g' > $@
 
 bg/lines bg/points bg/multipolygons osm slug \
 $(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
