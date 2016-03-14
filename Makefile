@@ -35,6 +35,7 @@ OGRFLAGS = -f 'ESRI Shapefile' -lco ENCODING=UTF-8 -overwrite -skipfailures
 BUFFER ?= 2640
 SLUG ?= slug
 GEOM ?= geom
+NAME ?= name
 
 # SVGIS flags and settings
 PADDING ?= 1200
@@ -97,7 +98,7 @@ $(POLYGONS) $(POINTS): %: slug/%.csv
 
 .SECONDEXPANSION:
 
-png/%.png: svg/%.svg | $$(@D)
+png/%.png: svg/%.svg names/%.csv | $$(@D)
 	convert -density 150 $< $(CONVERTFLAGS) $@
 
 svg/%.svg: $(CSS) $(BGS) $(MORE_GEODATA) shp/%.shp | $$(@D)
@@ -111,16 +112,23 @@ shp/%.shp: $$(@D).shp | $$(@D)
 	ogr2ogr $@ $< $(OGRFLAGS) -t_srs $(OUTPUT_PROJECTION) \
 	-where "$(SLUG)='$(basename $(@F))'"
 
+### Download place names
+names/%.csv: $$(@D).csv | $$(@D)
+	grep $(*F) $< | cut -d, -f 2 > $@
+
+$(foreach x,$(POLYGONS) $(POINTS),names/$x.csv): names/%.csv: shp/%.shp | names
+	ogr2ogr -f CSV $@ $< -select $(SLUG),$(NAME)
+
 ### Download PostGreSQL data
 # POINTS and POLYGONS separately
 
 $(foreach x,$(POINTS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(OGRFLAGS) -a_srs $(PSQL_PROJECTION) \
-	-sql "SELECT ST_Buffer($(GEOM), $(BUFFER), 120) $(GEOM), $(SLUG) FROM $(basename $(@F))"
+	-sql "SELECT ST_Buffer($(GEOM), $(BUFFER), 120) $(GEOM), $(SLUG), $(NAME) FROM $(basename $(@F))"
 
 $(foreach x,$(POLYGONS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(basename $(@F)) \
-	$(OGRFLAGS) -a_srs $(PSQL_PROJECTION) -select $(SLUG)
+	$(OGRFLAGS) -a_srs $(PSQL_PROJECTION) -select $(SLUG),$(NAME)
 
 ### Download OSM data
 
@@ -138,7 +146,7 @@ osm/%.ql: queries/%.txt | osm
 	sed 's,/\*.*\*/,,g' > $@
 
 bg/lines bg/points bg/multipolygons osm slug \
-$(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
+$(foreach x,names png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
 	mkdir -p $@
 
 ### install
