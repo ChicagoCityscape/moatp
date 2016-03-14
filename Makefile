@@ -141,8 +141,12 @@ $(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
 
 ### install
 
-PIP = pip
+PIP = $(shell which pip)
 PIPINSTALL = $(PIP) install --upgrade 'svgis[clip,simplify]>=0.4.0'
+
+ifneq "$(notdir $(PIP))" "pip"
+$(info pip not installed. Visit https://pip.pypa.io/en/stable/installing/)
+endif
 
 install-osx:
 	- brew install gdal --with-postgres
@@ -155,7 +159,19 @@ install-ubuntu:
 	apt-get -q install -y g++ libgdal1-dev gdal-bin libgeos-dev imagemagick python-dev
 	$(PIPINSTALL)
 
-install-centos:
-	yum -q update
-	yum -q install -y gcc-c++ epel-release gdal gdal-devel geos ImageMagick
+# If this fails, try running this first
+# yum update
+# sudo yum install -y epel-release
+# sudo yum-config-manager --enable epel/x86_64
+install-centos: ImageMagick.tar.gz
+	yum update
+	yum install -y epel-release
+	yum install -y gcc-c++ gdal gdal-devel geos \
+		python27-cairosvg freetype-devel libjpeg-devel libpng-devel \
+		libtiff-devel giflib-devel ghostscript-devel
+	tar xzf $|
+	cd ImageMagick* && ./configure && $(MAKE) && $(MAKE) install
 	$(PIPINSTALL)
+
+ImageMagick.tar.gz:
+	curl -O http://www.imagemagick.org/download/ImageMagick.tar.gz
