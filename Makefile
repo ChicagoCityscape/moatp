@@ -104,7 +104,7 @@ svg/%.svg: $(CSS) $(BGS) $(MORE_GEODATA) shp/%.shp | $$(@D)
 
 slug/%.csv: shp/%.shp | slug
 	ogr2ogr /dev/stdout $< -f CSV -select $(SLUG) | \
-	tail +2 | sed -E 's,^,$*/,' > $@
+	tail -n+2 | sed -E 's,^,$*/,' > $@
 
 shp/%.shp: $$(@D).shp | $$(@D)
 	ogr2ogr $@ $< $(OGRFLAGS) -t_srs $(OUTPUT_PROJECTION) \
