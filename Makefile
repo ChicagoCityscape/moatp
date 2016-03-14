@@ -13,6 +13,7 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+SHELL = bash
 
 include config.ini
 
@@ -169,7 +170,7 @@ install-centos: ImageMagick.tar.gz
 	yum install -y gcc-c++ gdal gdal-devel geos \
 		python27-cairosvg freetype-devel libjpeg-devel libpng-devel \
 		libtiff-devel giflib-devel ghostscript-devel
-	tar xzf $|
+	tar xzf $<
 	cd ImageMagick* && ./configure && $(MAKE) && $(MAKE) install
 	$(PIPINSTALL)
 
