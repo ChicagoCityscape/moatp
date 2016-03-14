@@ -1,6 +1,6 @@
-[out:xml][timeout:600];
+[out:xml][timeout:600][bbox:{{bbox}}];
 (
-    way["building"]({{bbox}});
+    way["building"];
 );
 (
     ._;

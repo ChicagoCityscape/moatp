@@ -1,21 +1,12 @@
-[out:xml][timeout:60];
+[out:xml][timeout:60][bbox:{{bbox}}];
 (
-    relation
-        [route=subway]
-        ({{bbox}});
-    relation
-        ["passenger"="suburban"]
-        ({{bbox}});
+    relation[route=subway];
+    relation["passenger"="suburban"];
 )->.routes;
 (
-    way
-        (r.routes);
-    way
-        [railway=subway]
-        ({{bbox}});
-    way
-        [railway=rail]
-        ({{bbox}});
+    way(r.routes);
+    way[railway=subway];
+    way[railway=rail];
 )->.rails;
 (
     way.rails[service];

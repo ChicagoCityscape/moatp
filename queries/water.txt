@@ -1,16 +1,16 @@
-[out:xml][timeout:600];
+[out:xml][timeout:600][bbox:{{bbox}}];
 (
-    way["water"="lake"]({{bbox}});
-    relation["water"="lake"]({{bbox}});
+    way["water"="lake"];
+    relation["water"="lake"];
 
-    way["waterway"="riverbank"]({{bbox}});
-    relation["waterway"="riverbank"]({{bbox}});
+    way["waterway"="riverbank"];
+    relation["waterway"="riverbank"];
 
-    way["natural"="water"]({{bbox}});
-    relation["natural"="water"]({{bbox}});
+    way["natural"="water"];
+    relation["natural"="water"];
 
-    way["natural"="wetland"]({{bbox}});
-    relation["natural"="wetland"]({{bbox}});
+    way["natural"="wetland"];
+    relation["natural"="wetland"];
 );
 (
     ._;

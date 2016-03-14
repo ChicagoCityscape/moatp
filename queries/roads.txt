@@ -1,11 +1,11 @@
-[out:xml][timeout:600];
+[out:xml][timeout:600][bbox:{{bbox}}];
 (
-    way["highway"="primary"]({{bbox}});
-    relation["highway"="primary"]({{bbox}});
-    way["highway"="motorway"]({{bbox}});
-    relation["highway"="motorway"]({{bbox}});
-    way["highway"="secondary"]({{bbox}});
-    relation["highway"="secondary"]({{bbox}});
+    way["highway"="primary"];
+    relation["highway"="primary"];
+    way["highway"="motorway"];
+    relation["highway"="motorway"];
+    way["highway"="secondary"];
+    relation["highway"="secondary"];
 );
 (
     ._;

@@ -1,6 +1,6 @@
-[out:xml][timeout:60];
+[out:xml][timeout:60][bbox:{{bbox}}];
 (
-    node[railway=station]({{bbox}});
+    node[railway=station];
 );
 (
     ._;

@@ -1,7 +1,7 @@
-[out:xml][timeout:600];
+[out:xml][timeout:600][bbox:{{bbox}}];
 (
-    way["leisure"="park"]({{bbox}});
-    relation["leisure"="park"]({{bbox}});
+    way["leisure"="park"];
+    relation["leisure"="park"];
 );
 (
     ._;
