@@ -70,7 +70,7 @@ bg/$x.shp)
 
 # Targets:
 
-.PHONY: info bgs pngs shps rawshp svgs $(POLYGONS) $(POINTS)
+.PHONY: info bgs pngs shps rawshp svgs $(POLYGONS) $(POINTS) slugs
 
 svgs pngs shps: $(foreach x,$(POLYGONS) $(POINTS),slug/$x.csv)
 	cat $^ | \
