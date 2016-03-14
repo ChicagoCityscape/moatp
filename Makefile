@@ -141,6 +141,7 @@ $(foreach x,png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
 	mkdir -p $@
 
 ### install
+.PHONY: install-osx install-ubuntu install-centos check
 
 PIP = $(shell which pip)
 PIPINSTALL = $(PIP) install --upgrade 'svgis[clip,simplify]>=0.4.0'
@@ -176,3 +177,9 @@ install-centos: ImageMagick.tar.gz
 
 ImageMagick.tar.gz:
 	curl -O http://www.imagemagick.org/download/ImageMagick.tar.gz
+
+check:
+	ogr2ogr --version
+	ogr2ogr --formats | grep Post # Next line should say -> "PostgreSQL" (read/write)
+	svgis --version
+	convert -version

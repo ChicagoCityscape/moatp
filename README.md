@@ -33,6 +33,8 @@ which make && which pip && which brew
 ```
 On OS X you should see three paths. On Linux, only two since brew isn't needed.
 
+To test if the required commands are available, use the command `make check`. It should spit out the versions of `ogr2ogr`, `svgis` and `convert`.
+
 Setup
 -----
 
