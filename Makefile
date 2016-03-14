@@ -89,6 +89,7 @@ info:
 rawshps: $(foreach x,$(POINTS) $(POLYGONS),shp/$x.shp)
 bgs: $(BGS)
 osms: $(OSMS)
+slugs: $(foreach x,$(POINTS) $(POLYGONS),slug/$x.csv)
 
 # General rule for each table
 $(POLYGONS) $(POINTS): %: slug/%.csv
