@@ -39,6 +39,7 @@ GEOM ?= geom
 PADDING ?= 1200
 SCALE ?= 10
 CSS ?= style.css
+CLASSFIELDS = highway,railway
 DRAWFLAGS = --style $(CSS) \
 	--no-viewbox \
 	--inline \
@@ -47,7 +48,12 @@ DRAWFLAGS = --style $(CSS) \
 	--scale $(SCALE) \
 	--padding $(PADDING) \
 	--precision 0 \
-	--simplify 90
+	--simplify 90 \
+	$(CLASSFIELDSFLAG)
+
+ifdef CLASSFIELDS
+	CLASSFIELDSFLAG = --class-fields $(CLASSFIELDS)
+endif
 
 # curl flags and settings
 API ?= http://overpass-api.de/api/interpreter

@@ -54,3 +54,8 @@
     stroke-width: 2px;
     stroke: #323589;
 }
+
+.highway_motorway {
+    stroke-width: 4px;
+    stroke: #888888;
+}
