@@ -49,6 +49,17 @@ chmod 0600 .pgpass
 
 [More info about .pgpass files](http://www.postgresql.org/docs/current/static/libpq-pgpass.html).
 
+### BBOX
+
+Run this after creating `.pgpass` and setting the tables in `POLYGONS` and `POINTS`:
+````
+make -f bbox.mk
+````
+
+It will spit the bounding box for all the data in your tables.
+
+### Configuration file
+
 Create a file called `config.ini` with the following information:
 ```
 PSQL_PROJECTION= [map projection in database]
@@ -73,29 +84,17 @@ CONVERTFLAGS = -resize 1200x\> -depth 5
 
 See [`config_example.ini`](config_example.ini) for more options.
 
-### BBOX
-
-Run this after creating `.pgpass` and setting the tables in `POLYGONS` and `POINTS`:
-````
-make -f bbox.mk
-````
-
-It will spit the bounding box for all the data in your tables.
-
-Queries
--------
+### Queries
 
 To extract the OpenStreetMap data necessary to combine with your GIS, MOATP uses the Overpass API. Overpass queries use a unique and fairly complicated syntax. See the wizard at [Overpass Turbo](http://overpass-turbo.eu) and the documentation for [Overpass API language guide](https://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide) for help in writing a query.
 
 MOATP expects queries to return only one type of geometry. See the [`queries`](queries) directory for examples that return point, line and polygon data.
 
-Styles
-------
+### Styles
 
 See [`style.css`](style.css) for an example stylesheet, which is customized to Chicago Cityscape. It shows only certain classes of roads, parks and park-like spaces, water features, buildings, parking lots, train stations, and transit routes. 
 
-Targets
--------
+## Make the maps
 
 For a review of settings, run `make info`.
 
