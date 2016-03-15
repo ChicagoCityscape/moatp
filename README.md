@@ -94,7 +94,30 @@ See [`config_example.ini`](config_example.ini) for more options.
 
 To extract the OpenStreetMap data necessary to combine with your GIS, MOATP uses the Overpass API. Overpass queries use a unique and fairly complicated syntax. See the wizard at [Overpass Turbo](http://overpass-turbo.eu) and the documentation for [Overpass API language guide](https://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide) for help in writing a query.
 
-MOATP expects queries to return only one type of geometry. See the [`queries`](queries) directory for examples that return point, line and polygon data.
+MOATP expects queries to return only one type of geometry. See the [`queries`](queries) directory for examples that return point, line, and polygon data.
+
+Here's an **example query** that Chicago Cityscape uses to get certain road classes (you can [run this on Overpass Turbo](http://overpass-turbo.eu/s/f1z) on a part of Chicago to see what data would be grabbed with it):
+````
+[out:xml][timeout:600][bbox:{{bbox}}];
+(
+    way["highway"="primary"];
+    relation["highway"="primary"];
+    way["highway"="motorway"];
+    relation["highway"="motorway"];
+    way["highway"="secondary"];
+    relation["highway"="secondary"];
+    way["highway"="tertiary"];
+    relation["highway"="tertiary"];
+    way["highway"="trunk"];
+    relation["highway"="trunk"];
+);
+(
+    ._;
+    >;
+);
+out body qt;
+
+````
 
 ### Styles
 
