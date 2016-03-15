@@ -16,11 +16,10 @@ Recommended (these improve performance):
 * [GEOS](https://trac.osgeo.org/geos/)
 * [Numpy](http://www.numpy.org)
 
-Installation tasks are included for OS X and two flavors of Linux:
+Installation tasks are included for OS X and Ubuntu Linux:
 ```
 make install-osx
 sudo make install-ubuntu
-sudo make install-centos
 ```
 
 The OS X installer assumes [homebrew](http://brew.sh) (`brew`).

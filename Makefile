@@ -167,25 +167,8 @@ install-osx:
 
 install-ubuntu:
 	apt-get -q update
-	apt-get -q install -y g++ libgdal1-dev gdal-bin libgeos-dev imagemagick python-dev
+	apt-get -q install -y g++ libgdal1-dev gdal-bin libgeos-dev imagemagick python-dev postgresql
 	$(PIPINSTALL)
-
-# If this fails, try running this first
-# yum update
-# sudo yum install -y epel-release
-# sudo yum-config-manager --enable epel/x86_64
-install-centos: ImageMagick.tar.gz
-	yum update
-	yum install -y epel-release
-	yum install -y gcc-c++ gdal gdal-devel geos \
-		python27-cairosvg freetype-devel libjpeg-devel libpng-devel \
-		libtiff-devel giflib-devel ghostscript-devel
-	tar xzf $<
-	cd ImageMagick* && ./configure && $(MAKE) && $(MAKE) install
-	$(PIPINSTALL)
-
-ImageMagick.tar.gz:
-	curl -O http://www.imagemagick.org/download/ImageMagick.tar.gz
 
 check:
 	ogr2ogr --version
