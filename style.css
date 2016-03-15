@@ -34,7 +34,14 @@
 }
 
 .roads {
-    stroke-width: 1.25px;
+    stroke-width: 1.50px;
+}
+.highway_motorway, .highway_trunk {
+    stroke-width: 4px;
+    stroke: #888888;
+}
+.highway_tertiary {
+	stroke-width: 1.00px;
 }
 
 #water polygon,
@@ -55,10 +62,7 @@
     stroke: #323589;
 }
 
-.highway_motorway {
-    stroke-width: 4px;
-    stroke: #888888;
-}
+
 
 .amenity_parking {
 	fill:lightgray;
