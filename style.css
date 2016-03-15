@@ -19,8 +19,7 @@
 .slug polygon,
 .slug .polygon {
     fill: none;
-    stroke-width: 9px;
-    opacity: 0.9;
+    stroke: none;
 }
 
 .buildings {
@@ -33,7 +32,7 @@
     stroke: none;
 }
 .landuse_cemetery {
-	fill: #718C6C;
+    fill: #718C6C;
     stroke: none;
 }
 
@@ -48,7 +47,7 @@
 }
 
 .highway_tertiary {
-	stroke-width: 1.00px;
+    stroke-width: 1.00px;
 }
 
 #water polygon,
@@ -70,5 +69,5 @@
 }
 
 .amenity_parking {
-	fill:lightgray;
+    fill: lightgray;
 }
