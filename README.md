@@ -122,7 +122,7 @@ out body qt;
 
 See [`style.css`](style.css) for an example stylesheet, which is customized to Chicago Cityscape. It shows only certain classes of roads, parks and park-like spaces, water features, buildings, parking lots, train stations, and transit routes. 
 
-The **example style classes* below show how the roads from the query above would be styled:
+The **example style classes** below show how the roads from the query above would be styled:
 ````
 /* All roads should default to 1.5 pixels thick, defaults to black
  * This includes "primary" and "secondary roads" 
