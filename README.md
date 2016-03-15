@@ -1,4 +1,4 @@
-moatp
+Map Of All The Places
 -----
 
 MOATP is a workflow for combining GIS data in PostgreSQL and [OpenStreetMap](http://openstreetmap.org) geodata into beautiful and highly customizable SVG and PNG maps.
@@ -73,7 +73,7 @@ CONVERTFLAGS = -resize 1200x\> -depth 5
 
 See [`config_example.ini`](config_example.ini) for more options.
 
-## BBOX
+### BBOX
 
 Run this after creating `.pgpass` and setting the tables in `POLYGONS` and `POINTS`:
 ````
