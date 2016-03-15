@@ -28,8 +28,12 @@
     stroke: none;
 }
 
-.parks, .landuse_grass, .landuse_recreation_ground {
+.parks {
     fill: #7fb575;
+    stroke: none;
+}
+.landuse_cemetery {
+	fill: #718C6C;
     stroke: none;
 }
 
