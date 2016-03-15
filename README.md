@@ -1,11 +1,11 @@
 Map Of All The Places
 -----
 
-MOATP is a workflow for combining GIS data in PostgreSQL and [OpenStreetMap](http://openstreetmap.org) geodata into beautiful and highly customizable, static SVG and PNG maps.
+MOATP is a workflow for combining geographic data in PostgreSQL and [OpenStreetMap](http://openstreetmap.org) geodata into beautiful, customizable, static SVG and PNG maps. If you have a bunch of data in a PostGIS database and want to combine it with OpenStreetMap to create a whole bunch of maps quickly, try it out.
 
-If you have a bunch of data in a PostgreSQL/PostGIS database and want to combine it with OpenStreetMap to create a whole bunch of maps, try it out.
+[Chicago Cityscape](http://chicagocityscape.com) has interactive maps for 2,100+ "Places" – neighborhoods, city council districts, ZIP codes, business improvement districts (called Special Service Areas) – but had a need for static maps to show the boundaries of each Place, when shared on social media, or in daily notification emails. 
 
-Here's a static map of the [Woodlawn community area](http://www.chicagocityscape.com/places.php?place=communityarea-woodlawn) in Chicago, Illinois.
+MOATP created this static map of the [Woodlawn community area](http://www.chicagocityscape.com/places.php?place=communityarea-woodlawn) in Chicago, Illinois, in a matter of seconds, and continued to create maps for the 76 other community areas.
 <img src="http://chicagocityscape.com/map_images/communityarea/communityarea-woodlawn.png" width="50%">
 
 ## Installation
