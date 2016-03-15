@@ -39,7 +39,7 @@
 
 #water polygon,
 #water .polygon {
-    fill: #647dde;
+    fill: #90C3D4;
     stroke: none;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .transit {
-    stroke-width: 2.75px;
+    stroke-width: 2.50px;
     stroke: #323589;
 }
 
