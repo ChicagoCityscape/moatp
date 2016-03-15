@@ -1,0 +1,61 @@
+/*
+ moatp: workflow for creating many maps combining PostGreSQL and OSM geodata
+ Copyright (C) 2016 Neil Freeman
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+.slug polygon,
+.slug .polygon {
+    fill: none;
+    stroke-width: 18px;
+    opacity: 0.42;
+}
+
+.buildings {
+    fill: #3a3a3a;
+    stroke: none;
+}
+
+.parks {
+    fill: #7fb575;
+    stroke: none;
+}
+
+.roads {
+    stroke-width: 1.25px;
+}
+
+#water polygon,
+#water .polygon {
+    fill: #647dde;
+    stroke: none;
+}
+
+.stops {
+    r: 7.2;
+    fill: white;
+    stroke: #323589;
+    stroke-width: 1.75px;
+}
+
+.transit {
+    stroke-width: 2px;
+    stroke: #323589;
+}
+
+.highway_motorway {
+    stroke-width: 4px;
+    stroke: #888888;
+}

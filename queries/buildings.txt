@@ -1,0 +1,9 @@
+[out:xml][timeout:600][bbox:{{bbox}}];
+(
+    way["building"];
+);
+(
+    ._;
+    >;
+);
+out body qt;

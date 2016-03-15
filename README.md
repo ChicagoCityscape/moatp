@@ -1,22 +1,114 @@
-# Map of all the Places (MOATP)
+moatp
+-----
 
-MOATP is a procedure that creates a map for each and every one of the [2,100+ "Places"](http://www.chicagocityscape.com/places.php) (boundaries) that Chicago Cityscape uses to slice and dice development data (building permits, building violations, business licenses, and property taxes). 
+MOATP is a workflow for combining PostGreSQL and [OpenStreetMap](http://openstreetmap.org) geodata into beautiful SVG maps.
 
-## Uses
-The maps would be used across the site, and in transactional emails, in these ways:
+If you have a bunch of data in a Postgres database and want to combine it with OpenStreetMap to create a whole bunch of maps, try it out.
 
-- Referenced in the page as part of the OpenGraph so that Twitter, Buffer, Pinterest, and Facebook embed them within social media posts.
-- Embedded in transactional emails that Chicago Cityscape users subscribe to, to receive updates about a Place.
+Requirements
+------------
 
-## How to make the images
-1. Use `svgis` to generate a GeoJSON for each Place (boundary). 
-2. Use `osm-tiny-maps` to download Chicago streets, parks, and buildings from OpenStreetMap.
-3. Combine the GeoJSON for each place from `svgis` and overlay the Place boundary on the OSM data. The Place boundary would be conspicuous; the OSM data wouldn't be clipped to the boundary. The OSM data would extend past the image dimensions. 
-4. Somehow some styling would need to be applied!
+* [GDAL](http://www.gdal.org) with PostgreSQL support
+* [ImageMagick](http://www.imagemagick.org/script/binary-releases.php)
+* [svgis](https://github.com/fitnr/svgis)
 
-The procedure would need to be run once in the beginning, and then whenever new Places are added. Some of the Place types have additions frequently (like neighborhood and business organizations, and user-drawn boundaries). 
+Recommended (these improve performance):
+* [GEOS](https://trac.osgeo.org/geos/)
+* [Numpy](http://www.numpy.org)
 
-## Open source
-The procedure should be open source. The images that Chicago Cityscape creates using the procedure will be open source, and I'll even attempt to publish them here (or with a well-defined folder hierarchy on the CC webserver, e.g. `/map_images/ward/50.png`). 
+Installation tasks are included for OS X and two flavors of Linux:
+```
+make install-osx
+sudo make install-ubuntu
+sudo make install-centos
+```
 
-The source data (e.g. all of the shapefiles and PostGIS database) will not be provided. 
+The OS X installer assumes [homebrew](http://brew.sh) (`brew`).
+
+Both installers assume [`pip`](https://pip.pypa.io/en/stable/). If you don't have these available, install them first.
+
+You can check if your machine is ready with this command:
+```
+which make && which pip && which brew
+```
+On OS X you should see three paths. On Linux, only two since brew isn't needed.
+
+To test if the required commands are available, use the command `make check`. It should spit out the versions of `ogr2ogr`, `svgis` and `convert`.
+
+Setup
+-----
+
+Add a file called `.pgpass` in this directory. It should have the format:
+````
+hostname:port:database:username:password
+````
+and `0600` permissions:
+```
+chmod 0600 .pgpass
+```
+
+[More info about .pgpass files](http://www.postgresql.org/docs/current/static/libpq-pgpass.html).
+
+Create a file called `config.ini` with the following information:
+```
+PSQL_PROJECTION= [map projection in database]
+OUTPUT_PROJECTION= [desired projection of output]
+
+# tables with POLYGON/MULTIPOLYGON geometry
+POLYGONS= [space-separated of tables]
+
+# tables with POINT/MULTIPOINT geometry
+POINTS= [space-separated of tables]
+
+# Bounding box for OSM data (long/lat format, comma-separated):
+BBOX = minlat,minlong,maxlat,maxlong
+
+# template files that contain a {{bbox}} place holder
+QUERIES= [space-separated of files]
+```
+
+See [`config_example.ini`](config_example.ini) for more options.
+
+## BBOX
+
+Run this after creating `.pgpass` and setting the tables in `POLYGONS` and `POINTS`:
+````
+make -f bbox.mk
+````
+
+It will spit the bounding box for all the data in your tables.
+
+Queries
+-------
+
+OSM Overpass queries use a unique and fairly complicated syntax, See [Overpass Turbo](http://overpass-turbo.eu) and the [Overpass API language guide](https://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide) for help in writing a query.
+
+MOATP expects queries to return only one type of geometry. See the [`queries`](queries) directory for examples that return point, line and polygon data.
+
+Styles
+------
+
+See [`style.css`](style.css) for an example stylesheet.
+
+Targets
+-------
+
+For a review of settings, run `make info`.
+
+To create all the `png` or `svg` files, run:
+````
+make pngs
+make svgs
+````
+
+If your tables are named `boroughs` and `neighborhoods`, create pngs for one table like:
+````
+make boroughs
+````
+
+License
+-------
+
+MOATP was developed by [Neil Freeman](http://fakeisthenewreal.org) for [Chicago Cityscape](http://chicagocityscape.com).
+
+Copyright 2016, Neil Freeman. Licensed under the GPL. See LICENSE for more.
