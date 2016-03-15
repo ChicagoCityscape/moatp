@@ -8,27 +8,31 @@ If you have a bunch of data in a PostgreSQL/PostGIS database and want to combine
 Here's a static map of the [Woodlawn community area](http://www.chicagocityscape.com/places.php?place=communityarea-woodlawn) in Chicago, Illinois.
 <img src="http://chicagocityscape.com/map_images/communityarea/communityarea-woodlawn.png" width="50%">
 
-Requirements
-------------
+## Installation
+
+### Requirements
 
 * [GDAL](http://www.gdal.org) with PostgreSQL support
 * [ImageMagick](http://www.imagemagick.org/script/binary-releases.php)
-* [svgis](https://github.com/fitnr/svgis)
+* [svgis](https://github.com/fitnr/svgis) (also by this author)
 
 Recommended (these improve performance):
 * [GEOS](https://trac.osgeo.org/geos/)
 * [Numpy](http://www.numpy.org)
 
-Installation tasks are included for OS X and two flavors of Linux:
+### How to install
+
+Installation tasks to obtain the above dependencies are included for Mac OS X and two flavors of Linux. Clone this repository onto your computer and run one of these commands in the terminal:
 ```
 make install-osx
 sudo make install-ubuntu
 sudo make install-centos
 ```
 
-The OS X installer assumes [homebrew](http://brew.sh) (`brew`).
+### Installation notes
+The Mac OS X installer assumes you have [homebrew](http://brew.sh) (`brew`).
 
-Both installers assume [`pip`](https://pip.pypa.io/en/stable/). If you don't have these available, install them first.
+Both the Mac OS X and Linux installers assume you have [`pip`](https://pip.pypa.io/en/stable/). If you don't have these available, install them first.
 
 You can check if your machine is ready with this command:
 ```
@@ -38,8 +42,7 @@ On OS X you should see three paths. On Linux, only two since brew isn't needed.
 
 To test if the required commands are available, use the command `make check`. It should spit out the versions of `ogr2ogr`, `svgis` and `convert`.
 
-Setup
------
+## Setup
 
 Add a file called `.pgpass` in this directory. It should have the format:
 ````
