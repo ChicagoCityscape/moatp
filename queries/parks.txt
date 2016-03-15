@@ -2,6 +2,10 @@
 (
     way["leisure"="park"];
     relation["leisure"="park"];
+    way[landuse=recreation_ground];
+    way[landuse=grass];
+    way[leisure=nature_reserve];
+    way[landuse=cemetery];
 );
 (
     ._;

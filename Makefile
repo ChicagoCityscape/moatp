@@ -41,7 +41,7 @@ NAME ?= name
 PADDING ?= 1200
 SCALE ?= 10
 CSS ?= style.css
-CLASSFIELDS = highway,railway
+CLASSFIELDS = highway,railway,amenity,landuse
 DRAWFLAGS = --style $(CSS) \
 	--no-viewbox \
 	--inline \

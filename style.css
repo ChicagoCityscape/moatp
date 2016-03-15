@@ -19,12 +19,12 @@
 .slug polygon,
 .slug .polygon {
     fill: none;
-    stroke-width: 18px;
-    opacity: 0.42;
+    stroke-width: 9px;
+    opacity: 0.9;
 }
 
 .buildings {
-    fill: #3a3a3a;
+    fill: #C0AD86;
     stroke: none;
 }
 
@@ -32,30 +32,43 @@
     fill: #7fb575;
     stroke: none;
 }
+.landuse_cemetery {
+	fill: #718C6C;
+    stroke: none;
+}
 
 .roads {
-    stroke-width: 1.25px;
+    stroke-width: 1.50px;
+}
+
+.highway_motorway,
+.highway_trunk {
+    stroke-width: 4px;
+    stroke: #888888;
+}
+
+.highway_tertiary {
+	stroke-width: 1.00px;
 }
 
 #water polygon,
 #water .polygon {
-    fill: #647dde;
+    fill: #6CC7E6;
     stroke: none;
 }
 
 .stops {
-    r: 7.2;
+    r: 7.7;
     fill: white;
     stroke: #323589;
     stroke-width: 1.75px;
 }
 
 .transit {
-    stroke-width: 2px;
+    stroke-width: 2.50px;
     stroke: #323589;
 }
 
-.highway_motorway {
-    stroke-width: 4px;
-    stroke: #888888;
+.amenity_parking {
+	fill:lightgray;
 }
