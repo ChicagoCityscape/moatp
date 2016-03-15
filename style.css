@@ -19,8 +19,8 @@
 .slug polygon,
 .slug .polygon {
     fill: none;
-    stroke-width: 18px;
-    opacity: 0.42;
+    stroke-width: 9px;
+    opacity: 0.9;
 }
 
 .buildings {
@@ -28,7 +28,7 @@
     stroke: none;
 }
 
-.parks {
+.parks, .landuse_grass, .landuse_recreation_ground {
     fill: #7fb575;
     stroke: none;
 }
@@ -44,18 +44,22 @@
 }
 
 .stops {
-    r: 7.2;
+    r: 7.7;
     fill: white;
     stroke: #323589;
     stroke-width: 1.75px;
 }
 
 .transit {
-    stroke-width: 2px;
+    stroke-width: 2.75px;
     stroke: #323589;
 }
 
 .highway_motorway {
     stroke-width: 4px;
     stroke: #888888;
+}
+
+.amenity_parking {
+	fill:lightgray;
 }
