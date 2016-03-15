@@ -140,6 +140,7 @@ The **example style classes** below show how the roads from the query above woul
     stroke-width: 4px;
     stroke: #888888;
 }
+
 /* Minor roads should be thinner than the default */
 .highway_tertiary {
 	stroke-width: 1.00px;
@@ -156,9 +157,13 @@ make svgs
 make pngs
 ````
 
-If your tables are named `boroughs` and `neighborhoods`, create pngs for one table like:
+If your tables are named `communityarea` or `neighborhoods`, create PNGs for one table like:
 ````
-make boroughs neighborhoods
+make communityarea
+````
+or two tables like:
+````
+make communityarea neighborhoods
 ````
 
 License
