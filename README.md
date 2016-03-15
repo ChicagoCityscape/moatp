@@ -1,9 +1,9 @@
 moatp
 -----
 
-MOATP is a workflow for combining PostGreSQL and [OpenStreetMap](http://openstreetmap.org) geodata into beautiful SVG maps.
+MOATP is a workflow for combining GIS data in PostgreSQL and [OpenStreetMap](http://openstreetmap.org) geodata into beautiful and highly customizable SVG and PNG maps.
 
-If you have a bunch of data in a Postgres database and want to combine it with OpenStreetMap to create a whole bunch of maps, try it out.
+If you have a bunch of data in a PostgreSQL/PostGIS database and want to combine it with OpenStreetMap to create a whole bunch of maps, try it out.
 
 Requirements
 ------------
@@ -60,11 +60,15 @@ POLYGONS= [space-separated of tables]
 # tables with POINT/MULTIPOINT geometry
 POINTS= [space-separated of tables]
 
-# Bounding box for OSM data (long/lat format, comma-separated):
-BBOX = minlat,minlong,maxlat,maxlong
+# Bounding box for OSM data (lng/lat format, comma-separated) (this one's for Chicagoland):
+#BBOX = minlat,minlng,maxlat,maxlng
+BBOX = 41.36,-88.62,42.59,-87.03
 
 # template files that contain a {{bbox}} place holder
 QUERIES= [space-separated of files]
+
+# options for ImageMagick (these can be overridden in the command line)
+CONVERTFLAGS = -resize 1200x\> -depth 5
 ```
 
 See [`config_example.ini`](config_example.ini) for more options.
@@ -81,29 +85,29 @@ It will spit the bounding box for all the data in your tables.
 Queries
 -------
 
-OSM Overpass queries use a unique and fairly complicated syntax, See [Overpass Turbo](http://overpass-turbo.eu) and the [Overpass API language guide](https://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide) for help in writing a query.
+To extract the OpenStreetMap data necessary to combine with your GIS, MOATP uses the Overpass API. Overpass queries use a unique and fairly complicated syntax. See the wizard at [Overpass Turbo](http://overpass-turbo.eu) and the documentation for [Overpass API language guide](https://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide) for help in writing a query.
 
 MOATP expects queries to return only one type of geometry. See the [`queries`](queries) directory for examples that return point, line and polygon data.
 
 Styles
 ------
 
-See [`style.css`](style.css) for an example stylesheet.
+See [`style.css`](style.css) for an example stylesheet, which is customized to Chicago Cityscape. It shows only certain classes of roads, parks and park-like spaces, water features, buildings, parking lots, train stations, and transit routes. 
 
 Targets
 -------
 
 For a review of settings, run `make info`.
 
-To create all the `png` or `svg` files, run:
+To create all the `svg` or `png` files, run:
 ````
-make pngs
 make svgs
+make pngs
 ````
 
 If your tables are named `boroughs` and `neighborhoods`, create pngs for one table like:
 ````
-make boroughs
+make boroughs neighborhoods
 ````
 
 License
