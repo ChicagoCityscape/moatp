@@ -124,18 +124,23 @@ See [`style.css`](style.css) for an example stylesheet, which is customized to C
 
 The **example style classes** below show how the roads from the query above would be styled:
 ````
-/* All roads should default to 1.5 pixels thick, defaults to black
+/* 
+ * All roads should default to 1.5 pixels thick, defaults to black
  * This includes "primary" and "secondary roads" 
 */
 .roads {
     stroke-width: 1.50px;
 }
-/* Motorways (interstates) and trunk highways (Lake Shore Drive) should be thicker, but less dark */
+
+/* 
+ * Motorways (interstates) and trunk highways (Lake Shore Drive) 
+ * should be thicker, but less dark 
+*/
 .highway_motorway, .highway_trunk {
     stroke-width: 4px;
     stroke: #888888;
 }
-/* More minor roads should be thinner than the default */
+/* Minor roads should be thinner than the default */
 .highway_tertiary {
 	stroke-width: 1.00px;
 }
