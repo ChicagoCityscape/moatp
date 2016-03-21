@@ -6,6 +6,7 @@
     way[landuse=grass];
     way[leisure=nature_reserve];
     way[landuse=cemetery];
+    way[leisure=playground];
 );
 (
     ._;
