@@ -18,7 +18,7 @@
 .PHONY: all
 
 all: bbox/bbox.shp
-	svgis bounds --latlon $< | replace ' ' ,
+	svgis bounds --latlon $< | sed 's/ /,/g'
 
 include Makefile
 

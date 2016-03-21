@@ -1,13 +1,13 @@
 Map Of All The Places
 -----
 
-MOATP is a workflow for combining geographic data in PostgreSQL and [OpenStreetMap](http://openstreetmap.org) geodata into beautiful, customizable, static SVG and PNG maps. If you have a bunch of data in a PostGIS database and want to combine it with OpenStreetMap to create a whole bunch of maps quickly, try it out.
+MOATP is a workflow for combining geographic data in PostgreSQL and [OpenStreetMap](http://openstreetmap.org) into beautiful, customizable, static SVG and PNG maps. If you have a bunch of data in a PostGIS database and want to combine it with OpenStreetMap to create a whole bunch of maps quickly, try it out.
 
 ````
 Chicago Cityscape makes neighborhood, property, and construction development data accessible to all.
 ````
 
-[Chicago Cityscape](http://chicagocityscape.com/about.php) has interactive maps for over [2,100 "Places"](http://chicagocityscape.com/places.php) – neighborhoods, city council districts, ZIP codes, business improvement districts, etc. – but had a need for static maps to show the boundaries of each Place, when shared on social media, or in daily notification emails. 
+[Chicago Cityscape](http://chicagocityscape.com/about.php) has interactive maps for over [2,100 "places"](http://chicagocityscape.com/places.php), neighborhoods, city council districts, ZIP codes, business improvement districts, etc., but had a need for static maps to show the boundaries of each Place, when shared on social media, or in daily notification emails. 
 
 MOATP created this static map of the [Woodlawn community area](http://www.chicagocityscape.com/places.php?place=communityarea-woodlawn) in Chicago, Illinois, in a matter of seconds, and continued to create maps for the 76 other community areas.
 
@@ -31,7 +31,6 @@ Installation tasks to obtain the above dependencies are included for Mac OS X an
 ```
 make install-osx
 sudo make install-ubuntu
-sudo make install-centos
 ```
 
 ### Installation notes
@@ -60,15 +59,6 @@ chmod 0600 .pgpass
 
 [More info about .pgpass files](http://www.postgresql.org/docs/current/static/libpq-pgpass.html).
 
-### BBOX
-
-Run this after creating `.pgpass` and setting the tables in `POLYGONS` and `POINTS`:
-````
-make -f bbox.mk
-````
-
-It will spit the bounding box for all the data in your tables.
-
 ### Configuration file
 
 Create a file called `config.ini` with the following information:
@@ -90,10 +80,10 @@ BBOX = 41.36,-88.62,42.59,-87.03
 QUERIES= [space-separated of files]
 
 # options for ImageMagick (these can be overridden in the command line)
-CONVERTFLAGS = -resize 1200x\> -depth 5
+CONVERTFLAGS = -resize 1200x\>
 ```
 
-See [`config_example.ini`](config_example.ini) for more options.
+See [`config_example.ini`](config_example.ini) for many more options.
 
 ### Queries
 
@@ -105,16 +95,16 @@ Here's an **example query** that Chicago Cityscape uses to get certain road clas
 ````
 [out:xml][timeout:600][bbox:{{bbox}}];
 (
-    way["highway"="primary"];
-    relation["highway"="primary"];
-    way["highway"="motorway"];
-    relation["highway"="motorway"];
-    way["highway"="secondary"];
-    relation["highway"="secondary"];
-    way["highway"="tertiary"];
-    relation["highway"="tertiary"];
-    way["highway"="trunk"];
-    relation["highway"="trunk"];
+    way[highway=primary];
+    relation[highway=primary];
+    way[highway=motorway];
+    relation[highway=motorway];
+    way[highway=secondary];
+    relation[highway=secondary];
+    way[highway=tertiary];
+    relation[highway=tertiary];
+    way[highway=trunk];
+    relation[highway=trunk];
 );
 (
     ._;
@@ -162,7 +152,7 @@ make svgs
 make pngs
 ````
 
-If your tables are named `communityarea` or `neighborhoods`, create PNGs for one table like:
+If your tables are named `communityarea` or `neighborhoods`, create PNGs for one table:
 ````
 make communityarea
 ````

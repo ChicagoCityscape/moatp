@@ -41,9 +41,8 @@ NAME ?= name
 PADDING ?= 1200
 SCALE ?= 10
 CSS ?= style.css
-CLASSFIELDS = highway,railway,amenity,landuse
-DRAWFLAGS = --style $(CSS) \
-	--no-viewbox \
+CLASSFIELDS ?= highway,railway,amenity,landuse
+DRAWFLAGS = --no-viewbox \
 	--inline \
 	--clip \
 	--crs file \
@@ -52,6 +51,9 @@ DRAWFLAGS = --style $(CSS) \
 	--precision 0 \
 	--simplify 90 \
 	$(CLASSFIELDSFLAG)
+
+MODULATE ?= 75,75
+DENSITY ?= 150
 
 ifdef CLASSFIELDS
 	CLASSFIELDSFLAG = --class-fields $(CLASSFIELDS)
@@ -98,11 +100,15 @@ $(POLYGONS) $(POINTS): %: slug/%.csv
 
 .SECONDEXPANSION:
 
-png/%.png: svg/%.svg names/%.csv | $$(@D)
-	convert -density 150 $< $(CONVERTFLAGS) $@
+png/%.png: svg/%.svg mask/%.png names/%.csv | $$(@D)
+	convert -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) +mask $(CONVERTFLAGS) $@
 
 svg/%.svg: $(CSS) $(BGS) $(MORE_GEODATA) shp/%.shp | $$(@D)
-	svgis draw -o $@ $(filter-out %.css,$^) $(DRAWFLAGS) --bounds $$(svgis bounds $(lastword $^))
+	svgis draw -o $@ $(filter-out %.css,$^) $(DRAWFLAGS) --style $(CSS) --bounds $$(svgis bounds $(lastword $^))
+
+mask/%.png: shp/%.shp | $$(@D)
+	svgis draw $< $(DRAWFLAGS) --style 'polygon,.polygon{fill:black;stroke:none}' --bounds $$(svgis bounds $(lastword $^)) |\
+	convert -density $(DENSITY) svg:- -negate $@
 
 slug/%.csv: shp/%.shp | slug
 	ogr2ogr /dev/stdout $< -f CSV -select $(SLUG) | \
@@ -146,7 +152,7 @@ osm/%.ql: queries/%.txt | osm
 	sed 's,/\*.*\*/,,g' > $@
 
 bg/lines bg/points bg/multipolygons osm slug \
-$(foreach x,names png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
+$(foreach x,mask names png shp svg,$x $(addprefix $x/,$(POLYGONS) $(POINTS))):
 	mkdir -p $@
 
 ### install
@@ -167,25 +173,8 @@ install-osx:
 
 install-ubuntu:
 	apt-get -q update
-	apt-get -q install -y g++ libgdal1-dev gdal-bin libgeos-dev imagemagick python-dev
+	apt-get -q install -y g++ libgdal1-dev gdal-bin libgeos-dev imagemagick python-dev postgresql
 	$(PIPINSTALL)
-
-# If this fails, try running this first
-# yum update
-# sudo yum install -y epel-release
-# sudo yum-config-manager --enable epel/x86_64
-install-centos: ImageMagick.tar.gz
-	yum update
-	yum install -y epel-release
-	yum install -y gcc-c++ gdal gdal-devel geos \
-		python27-cairosvg freetype-devel libjpeg-devel libpng-devel \
-		libtiff-devel giflib-devel ghostscript-devel
-	tar xzf $<
-	cd ImageMagick* && ./configure && $(MAKE) && $(MAKE) install
-	$(PIPINSTALL)
-
-ImageMagick.tar.gz:
-	curl -O http://www.imagemagick.org/download/ImageMagick.tar.gz
 
 check:
 	ogr2ogr --version
