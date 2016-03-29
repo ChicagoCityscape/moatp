@@ -106,9 +106,11 @@ png/%.png: svg/%.svg mask/%.png names/%.csv | $$(@D)
 svg/%.svg: $(CSS) $(BGS) $(MORE_GEODATA) shp/%.shp | $$(@D)
 	svgis draw -o $@ $(filter-out %.css,$^) $(DRAWFLAGS) --style $(CSS) --bounds $$(svgis bounds $(lastword $^))
 
-mask/%.png: shp/%.shp | $$(@D)
-	svgis draw $< $(DRAWFLAGS) --style 'polygon,.polygon{fill:black;stroke:none}' --bounds $$(svgis bounds $(lastword $^)) |\
-	convert -density $(DENSITY) svg:- -negate $@
+mask/%.png: mask/%.svg
+	convert -density $(DENSITY) $< -negate $@
+
+mask/%.svg: shp/%.shp | $$(@D)
+	svgis draw -o $@ $< $(DRAWFLAGS) --style 'polygon,.polygon{fill:black;stroke:none}' --bounds $$(svgis bounds $<)
 
 slug/%.csv: shp/%.shp | slug
 	ogr2ogr /dev/stdout $< -f CSV -select $(SLUG) | \
