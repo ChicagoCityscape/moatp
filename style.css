@@ -23,9 +23,10 @@
 }
 
 .buildings {
-    fill: #C0AD86;
+    fill: none;
     stroke: none;
 }
+
 
 .parks {
     fill: #7fb575;
@@ -36,9 +37,11 @@
     stroke: none;
 }
 
+/*
 .roads {
     stroke-width: 1.50px;
 }
+*/
 
 .highway_motorway,
 .highway_trunk {
@@ -49,18 +52,25 @@
     stroke-width: 3.00px;
     stroke: #888888;
 }
-.highway_primary {
-    stroke-width: 2.00px;
+.highway_secondary {
+    stroke-width: 2.50px;
     stroke: #888888;
 }
 .highway_tertiary {
-    stroke-width: 1.00px;
+    stroke-width: 1.25px;
     stroke: #888888;
 }
-.highway_tertiary {
-    stroke-width: 1.00px;
+.highway_residential {
+    stroke-width: 1.25px;
     stroke: #888888;
 }
+/*
+.highway_cycleway {
+    stroke-width: 0.75px;
+    stroke: #888888;
+}
+
+*/
 
 #water polygon,
 #water .polygon {
@@ -69,10 +79,10 @@
 }
 
 .stops {
-    r: 8.5;
+    r: 9.7;
     fill: white;
     stroke: #323589;
-    stroke-width: 1.75px;
+    stroke-width: 2.75px;
 }
 
 .transit {
