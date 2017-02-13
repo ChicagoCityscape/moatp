@@ -10,6 +10,8 @@
     relation[highway=tertiary];
     way[highway=trunk];
     relation[highway=trunk];
+    way[highway=residential];
+    relation[highway=residential];
 );
 (
     ._;
