@@ -12,6 +12,10 @@
     relation[highway=trunk];
     way[highway=residential];
     relation[highway=residential];
+    
+    way[highway=path];
+	way[highway=footway];
+	way[highway=cycleway];
 );
 (
     ._;
