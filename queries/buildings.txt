@@ -1,6 +1,13 @@
 [out:xml][timeout:600][bbox:{{bbox}}];
 (
-    way[building];
+    way["name"]["building"]({{bbox}});
+	relation["name"]["building"]({{bbox}});
+	
+	way["building"="school"]({{bbox}});
+	relation["building"="school"]({{bbox}});
+	
+	way["amenity"="school"]({{bbox}});
+	relation["amenity"="school"]({{bbox}});
 );
 (
     ._;
