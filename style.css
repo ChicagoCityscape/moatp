@@ -45,9 +45,21 @@
     stroke-width: 4px;
     stroke: #888888;
 }
-
+.highway_primary {
+    stroke-width: 3.00px;
+    stroke: #888888;
+}
+.highway_primary {
+    stroke-width: 2.00px;
+    stroke: #888888;
+}
 .highway_tertiary {
     stroke-width: 1.00px;
+    stroke: #888888;
+}
+.highway_tertiary {
+    stroke-width: 1.00px;
+    stroke: #888888;
 }
 
 #water polygon,
@@ -57,14 +69,14 @@
 }
 
 .stops {
-    r: 7.7;
+    r: 8.5;
     fill: white;
     stroke: #323589;
     stroke-width: 1.75px;
 }
 
 .transit {
-    stroke-width: 2.50px;
+    stroke-width: 3.50px;
     stroke: #323589;
 }
 
