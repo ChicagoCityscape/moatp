@@ -26,22 +26,32 @@
     fill: #D0C6BD;
     stroke: none;
 }
+.landuse_retail {
+	fill: #EFDDBF;
+	stroke: none;
+}
+.amenity_school {
+	fill: #ECEECF;
+	stroke: none;
+}
 
 
 .parks {
-    fill: #7fb575;
+    fill: #C3E9A0;
     stroke: none;
 }
 .landuse_cemetery {
     fill: #718C6C;
     stroke: none;
 }
-
-/*
-.roads {
-    stroke-width: 1.50px;
+.landuse_grass {
+	fill: #BDFBC0;
+	stroke: none;
 }
-*/
+
+.roads {
+    stroke: none;
+}
 
 .highway_motorway,
 .highway_trunk {
@@ -49,28 +59,26 @@
     stroke: #888888;
 }
 .highway_primary {
-    stroke-width: 3.00px;
+    stroke-width: 3.50px;
     stroke: #888888;
 }
 .highway_secondary {
-    stroke-width: 2.50px;
+    stroke-width: 3.00px;
     stroke: #888888;
 }
 .highway_tertiary {
-    stroke-width: 1.25px;
+    stroke-width: 2.25px;
     stroke: #888888;
 }
 .highway_residential {
-    stroke-width: 1.25px;
+    stroke-width: 1.75px;
     stroke: #888888;
 }
-/*
-.highway_cycleway {
+.highway_cycleway, .bicycle_yes {
     stroke-width: 0.75px;
     stroke: #888888;
 }
 
-*/
 
 #water polygon,
 #water .polygon {
@@ -88,6 +96,13 @@
 .transit {
     stroke-width: 3.50px;
     stroke: #323589;
+}
+.building_train_station {
+	stroke-width: 1.00px;
+    stroke: #323589;
+}
+.tunnel_yes {
+	stroke-opacity: 0.70;
 }
 
 .amenity_parking {

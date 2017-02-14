@@ -8,6 +8,8 @@
 	
 	way["amenity"="school"]({{bbox}});
 	relation["amenity"="school"]({{bbox}});
+	
+	way["public_transport"="station"]({{bbox}});
 );
 (
     ._;
