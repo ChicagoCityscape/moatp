@@ -101,7 +101,25 @@ $(POLYGONS) $(POINTS): %: slug/%.csv
 .SECONDEXPANSION:
 
 png/%.png: svg/%.svg mask/%.png names/%.csv | $$(@D)
-	convert -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) +mask $(CONVERTFLAGS) $@
+	#convert -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) +mask $(CONVERTFLAGS) -gravity South -background White -splice 0x100 -annotate +0+30 '$(basename $(@F))' $@
+	#convert -composite -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) +mask $(CONVERTFLAGS) -gravity South logo.png $@
+	#convert -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) +mask $(CONVERTFLAGS) -gravity South -pointsize 50 -fill white -annotate +0+15 '$(basename $(@F))' logo.png -gravity center -append $@
+	#convert -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) +mask $(CONVERTFLAGS) logo.png -gravity center -append $@
+	#var="$(grep $(basename $(@F)) names/$(*D).csv | csvcut -c 2)" | convert -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) +mask $(CONVERTFLAGS) -gravity South -pointsize 40 -fill white -annotate +0+10 "$$var" logo.png -gravity center -append $@
+	#name := $(shell grep $(basename $(@F)) names/$(*D).csv | csvcut -c 2)
+		convert -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) +mask \
+		$(CONVERTFLAGS) -gravity South -pointsize 40 -fill white \
+		-annotate +0+10 "$(name)" \
+		logo.png -gravity center -append $@
+	#name=$(shell grep $(basename $(@F)) names/$(*D).csv | csvcut -c 2) | \
+		convert -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) +mask \
+		$(CONVERTFLAGS) -gravity South -pointsize 40 -fill white \
+		-annotate +0+10 '$(echo "$name")' \
+		logo.png -gravity center -append $@
+	convert -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) \
+		+mask $(CONVERTFLAGS) -gravity South -pointsize 40 -fill white \
+		-annotate +0+10 '$(shell grep -w $(basename $(@F)) names/$(*D).csv | csvcut -c 2 | sed -e s/\"//g)' logo.png \
+		-gravity center -append $@
 
 svg/%.svg: $(CSS) $(BGS) $(MORE_GEODATA) shp/%.shp | $$(@D)
 	svgis draw -o $@ $(filter-out %.css,$^) $(DRAWFLAGS) --style $(CSS) --bounds $$(svgis bounds $(lastword $^))
