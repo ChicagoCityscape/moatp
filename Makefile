@@ -52,8 +52,8 @@ DRAWFLAGS = --no-viewbox \
 	--simplify 90 \
 	$(CLASSFIELDSFLAG)
 
-MODULATE ?= 75,75
-DENSITY ?= 150
+MODULATE ?= 80,80
+DENSITY ?= 144
 
 ifdef CLASSFIELDS
 	CLASSFIELDSFLAG = --class-fields $(CLASSFIELDS)
@@ -101,7 +101,16 @@ $(POLYGONS) $(POINTS): %: slug/%.csv
 .SECONDEXPANSION:
 
 png/%.png: svg/%.svg mask/%.png names/%.csv | $$(@D)
-	convert -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) +mask $(CONVERTFLAGS) $@
+	convert \
+	    \( -size 600x75 -pointsize 30 -font 'Helvetica.dfont' -gravity center -fill black \
+	    caption:"$(shell grep -w $(basename $(@F)) names/$(*D).csv | csvcut -c 2 | sed -e s/\"//g)" \) \
+	    \( -density $(DENSITY) $< -mask $(filter mask/%,$^) -modulate $(MODULATE) \
+		+mask $(CONVERTFLAGS) \) \
+	    -append \
+	   $@
+	composite -gravity SouthWest -geometry +20+20 logo_transparent.png \
+		$@ \
+		$@
 
 svg/%.svg: $(CSS) $(BGS) $(MORE_GEODATA) shp/%.shp | $$(@D)
 	svgis draw -o $@ $(filter-out %.css,$^) $(DRAWFLAGS) --style $(CSS) --bounds $$(svgis bounds $(lastword $^))
