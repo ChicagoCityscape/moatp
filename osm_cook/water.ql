@@ -1,0 +1,1 @@
+[out:xml][timeout:600][bbox:41.36,-88.62,42.59,-87.03];(way[water=lake];relation[water=lake];way[waterway=riverbank];relation[waterway=riverbank];way[natural=water];relation[natural=water];way[natural=wetland];relation[natural=wetland];);(._;>;);out body qt;

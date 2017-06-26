@@ -145,7 +145,7 @@ $(foreach x,$(POINTS),shp/$x.shp): | $$(@D)
 
 $(foreach x,$(POLYGONS),shp/$x.shp): | $$(@D)
 	ogr2ogr $@ PG:"$(CONNECTION)" $(basename $(@F)) \
-	$(OGRFLAGS) -a_srs $(PSQL_PROJECTION) -select $(SLUG),$(NAME)
+	$(OGRFLAGS) -a_srs $(PSQL_PROJECTION) -select $(SLUG),$(NAME),$(GEOM)
 
 ### Download OSM data
 
