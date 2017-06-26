@@ -1,0 +1,1 @@
+[out:xml][timeout:600][bbox:41.36,-88.62,42.59,-87.03];(way[leisure=park];relation[leisure=park];way[landuse=recreation_ground];way[landuse=grass];way[leisure=nature_reserve];way[landuse=cemetery];way[leisure=playground];way[leisure=pitch];);(._;>;);out body qt;
