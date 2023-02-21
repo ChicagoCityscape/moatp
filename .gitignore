@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .pgpass
 config.ini
-query.ql
+query.overpassql
 bbox
 bg
 osm
