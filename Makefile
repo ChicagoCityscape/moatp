@@ -154,10 +154,10 @@ $(BGS): bg/%.shp: osm/$$(*F).osm | $$(@D)
 
 .PRECIOUS .INTERMEDIATE: $(OSMS)
 
-$(OSMS): osm/%.osm: osm/%.ql | osm
+$(OSMS): osm/%.osm: osm/%.overpassql | osm
 	curl $(API) $(CURLFLAGS) -o $@ --data @$<
 
-osm/%.ql: queries/%.txt | osm
+osm/%.overpassql: queries/%.overpassql | osm
 	sed "s/{{[bB][bB][oO][xX]}}/$(BBOX)/g;s,//.*$$,,;s/ *//;s,//.*$$,,g" $< | \
 	tr -d '\n' | \
 	sed 's,/\*.*\*/,,g' > $@
